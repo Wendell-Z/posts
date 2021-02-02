@@ -17,17 +17,17 @@
 
 
     <title>Java并发5:死锁 | YOLO</title>
-    <link rel="icon" type="image/png" href="https://cdn.jsdelivr.net/gh/Wendell-Z/posts/favicon.png">
+    <link rel="icon" type="image/png" href="/favicon.png">
 
-    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/Wendell-Z/posts/libs/awesome/css/all.css">
-    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/Wendell-Z/posts/libs/materialize/materialize.min.css">
-    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/Wendell-Z/posts/libs/aos/aos.css">
-    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/Wendell-Z/posts/libs/animate/animate.min.css">
-    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/Wendell-Z/posts/libs/lightGallery/css/lightgallery.min.css">
-    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/Wendell-Z/posts/css/matery.css">
-    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/Wendell-Z/posts/css/my.css">
+    <link rel="stylesheet" type="text/css" href="/libs/awesome/css/all.css">
+    <link rel="stylesheet" type="text/css" href="/libs/materialize/materialize.min.css">
+    <link rel="stylesheet" type="text/css" href="/libs/aos/aos.css">
+    <link rel="stylesheet" type="text/css" href="/libs/animate/animate.min.css">
+    <link rel="stylesheet" type="text/css" href="/libs/lightGallery/css/lightgallery.min.css">
+    <link rel="stylesheet" type="text/css" href="/css/matery.css">
+    <link rel="stylesheet" type="text/css" href="/css/my.css">
 
-    <script src="https://cdn.jsdelivr.net/gh/Wendell-Z/posts/libs/jquery/jquery.min.js"></script>
+    <script src="/libs/jquery/jquery.min.js"></script>
 
 <meta name="generator" content="Hexo 5.2.0"></head>
 
@@ -41,7 +41,7 @@
             <div class="brand-logo">
                 <a href="/" class="waves-effect waves-light">
                     
-                    <img src="https://cdn.jsdelivr.net/gh/Wendell-Z/posts/medias/logo.png" class="logo-img" alt="LOGO">
+                    <img src="/medias/logo.png" class="logo-img" alt="LOGO">
                     
                     <span class="logo-span">YOLO</span>
                 </a>
@@ -140,7 +140,7 @@
 
     <div class="mobile-head bg-color">
         
-        <img src="https://cdn.jsdelivr.net/gh/Wendell-Z/posts/medias/logo.png" class="logo-img circle responsive-img">
+        <img src="/medias/logo.png" class="logo-img circle responsive-img">
         
         <div class="logo-name">YOLO</div>
         <div class="logo-desc">
@@ -328,7 +328,7 @@
 <main class="post-container content">
 
     
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Wendell-Z/posts/libs/tocbot/tocbot.css">
+    <link rel="stylesheet" href="/libs/tocbot/tocbot.css">
 <style>
     #articleContent h1::before,
     #articleContent h2::before,
@@ -469,7 +469,7 @@
                 
                 <div class="info-break-policy">
                     <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
-                    1.9k
+                    1.8k
                 </div>
                 
 
@@ -487,7 +487,7 @@
 
         
         <!-- 是否加载使用自带的 prismjs. -->
-        <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Wendell-Z/posts/libs/prism/prism.css">
+        <link rel="stylesheet" href="/libs/prism/prism.css">
         
 
         
@@ -597,82 +597,74 @@
 
 <ul>
 <li><p>破坏不可抢占条件</p>
-  <pre class="line-numbers language-synchronized" data-language="synchronized"><div class="caption"><span>```是做不到的。原因是``` synchronized``` 申请资源的时候，如果申请不到，线程直接进入阻塞状态，而线程进入阻塞状态，啥都干不了，也释放不了线程已经占有的资源。</span></div><code class="language-synchronized">
-	&#96;&#96;&#96;java.util.concurrent&#96;&#96;&#96; 这个包下面提供的&#96;&#96;&#96; Lock&#96;&#96;&#96; 可以解决，见XXX。
-
-+ 破坏循环等待条件
-
-	破坏这个条件，需要对资源进行排序，然后按序申请资源。
-
-	假设每个账户都有不同的属性&#96;&#96;&#96; id&#96;&#96;&#96;，这个&#96;&#96;&#96; id &#96;&#96;&#96;可以作为排序字段，申请的时候，可以按从小到大的顺序来申请。比如下面代码，①~⑥处的代码对转出账户（&#96;&#96;&#96;this&#96;&#96;&#96;）和转入账户（&#96;&#96;&#96;target&#96;&#96;&#96;）排序，然后按照序号从小到大的顺序锁定账户。这样就不存在“循环”等待了。
-
-&#96;&#96;&#96;java
-class Account &#123;
-  private int id;
-  private int balance;
-  &#x2F;&#x2F; 转账
-  void transfer(Account target, int amt)&#123;
-    Account left &#x3D; this        ①
-    Account right &#x3D; target;    ②
-    if (this.id &gt; target.id) &#123; ③
-      left &#x3D; target;           ④
-      right &#x3D; this;            ⑤
-    &#125;                          ⑥
-    &#x2F;&#x2F; 锁定序号小的账户
-    synchronized(left)&#123;
-      &#x2F;&#x2F; 锁定序号大的账户
-      synchronized(right)&#123; 
-        if (this.balance &gt; amt)&#123;
-          this.balance -&#x3D; amt;
-          target.balance +&#x3D; amt;
-        &#125;
-      &#125;
-    &#125;
-  &#125; 
-&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-
+<p>  <code>synchronized </code>是做不到的。原因是<code> synchronized</code> 申请资源的时候，如果申请不到，线程直接进入阻塞状态，而线程进入阻塞状态，啥都干不了，也释放不了线程已经占有的资源。</p>
+<p>  <code>java.util.concurrent</code> 这个包下面提供的<code> Lock</code> 可以解决，见XXX。</p>
+</li>
+<li><p>破坏循环等待条件</p>
+<p>  破坏这个条件，需要对资源进行排序，然后按序申请资源。</p>
+<p>  假设每个账户都有不同的属性<code> id</code>，这个<code>id</code>可以作为排序字段，申请的时候，可以按从小到大的顺序来申请。比如下面代码，①~⑥处的代码对转出账户（<code>this</code>）和转入账户（<code>target</code>）排序，然后按照序号从小到大的顺序锁定账户。这样就不存在“循环”等待了。</p>
 </li>
 </ul>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">class</span> <span class="token class-name">Account</span> <span class="token punctuation">&#123;</span>
+  <span class="token keyword">private</span> <span class="token keyword">int</span> id<span class="token punctuation">;</span>
+  <span class="token keyword">private</span> <span class="token keyword">int</span> balance<span class="token punctuation">;</span>
+  <span class="token comment">// 转账</span>
+  <span class="token keyword">void</span> <span class="token function">transfer</span><span class="token punctuation">(</span><span class="token class-name">Account</span> target<span class="token punctuation">,</span> <span class="token keyword">int</span> amt<span class="token punctuation">)</span><span class="token punctuation">&#123;</span>
+    <span class="token class-name">Account</span> left <span class="token operator">=</span> <span class="token keyword">this</span>        ①
+    <span class="token class-name">Account</span> right <span class="token operator">=</span> target<span class="token punctuation">;</span>    ②
+    <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">.</span>id <span class="token operator">></span> target<span class="token punctuation">.</span>id<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span> ③
+      left <span class="token operator">=</span> target<span class="token punctuation">;</span>           ④
+      right <span class="token operator">=</span> <span class="token keyword">this</span><span class="token punctuation">;</span>            ⑤
+    <span class="token punctuation">&#125;</span>                          ⑥
+    <span class="token comment">// 锁定序号小的账户</span>
+    <span class="token keyword">synchronized</span><span class="token punctuation">(</span>left<span class="token punctuation">)</span><span class="token punctuation">&#123;</span>
+      <span class="token comment">// 锁定序号大的账户</span>
+      <span class="token keyword">synchronized</span><span class="token punctuation">(</span>right<span class="token punctuation">)</span><span class="token punctuation">&#123;</span> 
+        <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">.</span>balance <span class="token operator">></span> amt<span class="token punctuation">)</span><span class="token punctuation">&#123;</span>
+          <span class="token keyword">this</span><span class="token punctuation">.</span>balance <span class="token operator">-=</span> amt<span class="token punctuation">;</span>
+          target<span class="token punctuation">.</span>balance <span class="token operator">+=</span> amt<span class="token punctuation">;</span>
+        <span class="token punctuation">&#125;</span>
+      <span class="token punctuation">&#125;</span>
+    <span class="token punctuation">&#125;</span>
+  <span class="token punctuation">&#125;</span> 
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
 <h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>用<strong>细粒度锁</strong>来锁定多个资源时，要注意<strong>死锁</strong>的问题。</p>
 <p>需要能把它强化为一个思维定势，遇到这种场景，马上想到可能存在死锁问题。</p>
 <p>当知道风险之后，才有机会谈如何预防和避免，因此，识别出风险很重要。</p>
 <p><strong>转账例子中，破坏占用且等待条件的成本就比破坏循环等待条件的成本高。</strong></p>
-<p>**破坏占用且等待条件，也是锁了所有的账户，而且还是用了死循环 while(!actr.apply(this, target));方法，不过好在 apply() 这个方法基本不耗时。 **</p>
+<p><strong>破坏占用且等待条件，也是锁了所有的账户，而且还是用了死循环while(!actr.apply(this, target));方法，不过好在 apply() 这个方法基本不耗时。</strong></p>
 <p><strong>转账例子中，破坏循环等待条件就是成本最低的一个方案。</strong></p>
 <p>所以在选择具体方案的时候，还需要评估一下操作成本，从中选择一个成本最低的方案。</p>
-<h3 id="思考"><a href="#思考" class="headerlink" title="思考"></a>思考</h3><pre class="line-numbers language-while(!actr.apply(this," data-language="while(!actr.apply(this,"><div class="caption"><span>target));```与``` synchronized(Account.class) ```有无性能优势呢？</span></div><code class="language-while(!actr.apply(this,">
-前者只锁了转账操作，后者锁了账户所有操作。
-
-### 别人的总结
-
-&gt;老师，请问一下，在实际的开发中，account对象应该是从数据库中查询出来的吧，假如A转B，C转B一起执行，那B的account对象如何保证是同一个对象，不太理解。。。
-&gt;
-&gt;——**几字凉了秋丶**
-&gt;
-&gt;&gt;实际开发中都是用数据库事务+乐观锁的方式解决的。这个就是个例子，为了说明死锁是怎么回事，以及死锁问题怎么解决。
-&gt;&gt;
-&gt;&gt;——**作者**
-
-&gt;老师，感觉下面的代码也能避免死锁，并且能实现功能：
-&gt;
-&gt;&#96;&#96;&#96;java
-&gt;void transfer(Account target, int amt)&#123;
-&gt;  boolean isTransfer &#x3D; false;
-&gt;&#x2F;&#x2F; 锁定转出账户
-&gt;  synchronized(this)&#123;
-&gt;     if (this.balance &gt; amt) &#123;
-&gt;     this.balance -&#x3D; amt;
-&gt;     isTransfer &#x3D; true;
-&gt;  &#125;
-&gt;  if (!isTransfer) &#123;
-&gt;     return;
-&gt;  &#125;
-&gt;   &#x2F;&#x2F; 锁定转入账户
-&gt;   synchronized(target)&#123;
-&gt;     target.balance +&#x3D; amt;
-&gt;   &#125;
-&gt; &#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h3 id="思考"><a href="#思考" class="headerlink" title="思考"></a>思考</h3><p><code>while(!actr.apply(this, target));</code>与<code>synchronized(Account.class) </code>有无性能优势呢？</p>
+<p>前者只锁了转账操作，后者锁了账户所有操作。</p>
+<h3 id="别人的总结"><a href="#别人的总结" class="headerlink" title="别人的总结"></a>别人的总结</h3><blockquote>
+<p>老师，请问一下，在实际的开发中，account对象应该是从数据库中查询出来的吧，假如A转B，C转B一起执行，那B的account对象如何保证是同一个对象，不太理解。。。</p>
+<p>——<strong>几字凉了秋丶</strong></p>
 <blockquote>
+<p>实际开发中都是用数据库事务+乐观锁的方式解决的。这个就是个例子，为了说明死锁是怎么回事，以及死锁问题怎么解决。</p>
+<p>——<strong>作者</strong></p>
+</blockquote>
+</blockquote>
+<blockquote>
+<p>老师，感觉下面的代码也能避免死锁，并且能实现功能：</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token operator">></span><span class="token keyword">void</span> <span class="token function">transfer</span><span class="token punctuation">(</span><span class="token class-name">Account</span> target<span class="token punctuation">,</span> <span class="token keyword">int</span> amt<span class="token punctuation">)</span><span class="token punctuation">&#123;</span>
+ <span class="token keyword">boolean</span> isTransfer <span class="token operator">=</span> <span class="token boolean">false</span><span class="token punctuation">;</span>
+<span class="token operator">></span><span class="token comment">// 锁定转出账户</span>
+ <span class="token keyword">synchronized</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">)</span><span class="token punctuation">&#123;</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">.</span>balance <span class="token operator">></span> amt<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+    <span class="token keyword">this</span><span class="token punctuation">.</span>balance <span class="token operator">-=</span> amt<span class="token punctuation">;</span>
+    isTransfer <span class="token operator">=</span> <span class="token boolean">true</span><span class="token punctuation">;</span>
+ <span class="token punctuation">&#125;</span>
+ <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>isTransfer<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+    <span class="token keyword">return</span><span class="token punctuation">;</span>
+ <span class="token punctuation">&#125;</span>
+  <span class="token comment">// 锁定转入账户</span>
+  <span class="token keyword">synchronized</span><span class="token punctuation">(</span>target<span class="token punctuation">)</span><span class="token punctuation">&#123;</span>
+    target<span class="token punctuation">.</span>balance <span class="token operator">+=</span> amt<span class="token punctuation">;</span>
+  <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
 <p>反映到现实中的场景：服务员A拿到账本1先判断余额够不够，够的话先扣款，再等待其他人操作完账本2，才增加它的额度。</p>
 <p>但是这样转账和到账就存在一个时差，现实生活中也是这样，转账不会立马到账，短信提醒24小时内到账，所谓的最终一致性。</p>
 <p>老师帮忙看看这样实现会不会有啥其他问题？</p>
@@ -758,12 +750,12 @@ class Account &#123;
                     
                 </div>
                 <div class="post_share" style="zoom: 80%; width: fit-content; display: inline-block; float: right; margin: -0.15rem 0;">
-                    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/Wendell-Z/posts/libs/share/css/share.min.css">
+                    <link rel="stylesheet" type="text/css" href="/libs/share/css/share.min.css">
 <div id="article-share">
 
     
     <div class="social-share" data-sites="twitter,facebook,google,qq,qzone,wechat,weibo,douban,linkedin" data-wechat-qrcode-helper="<p>微信扫一扫即可分享！</p>"></div>
-    <script src="https://cdn.jsdelivr.net/gh/Wendell-Z/posts/libs/share/js/social-share.min.js"></script>
+    <script src="/libs/share/js/social-share.min.js"></script>
     
 
     
@@ -905,21 +897,21 @@ class Account &#123;
 
 
 <!-- 代码块功能依赖 -->
-<script type="text/javascript" src="https://cdn.jsdelivr.net/gh/Wendell-Z/posts/libs/codeBlock/codeBlockFuction.js"></script>
+<script type="text/javascript" src="/libs/codeBlock/codeBlockFuction.js"></script>
 
 <!-- 代码语言 -->
 
-<script type="text/javascript" src="https://cdn.jsdelivr.net/gh/Wendell-Z/posts/libs/codeBlock/codeLang.js"></script>
+<script type="text/javascript" src="/libs/codeBlock/codeLang.js"></script>
 
 
 <!-- 代码块复制 -->
 
-<script type="text/javascript" src="https://cdn.jsdelivr.net/gh/Wendell-Z/posts/libs/codeBlock/codeCopy.js"></script>
+<script type="text/javascript" src="/libs/codeBlock/codeCopy.js"></script>
 
 
 <!-- 代码块收缩 -->
 
-<script type="text/javascript" src="https://cdn.jsdelivr.net/gh/Wendell-Z/posts/libs/codeBlock/codeShrink.js"></script>
+<script type="text/javascript" src="/libs/codeBlock/codeShrink.js"></script>
 
 
     </div>
@@ -940,7 +932,7 @@ class Account &#123;
 </div>
 
 
-<script src="https://cdn.jsdelivr.net/gh/Wendell-Z/posts/libs/tocbot/tocbot.min.js"></script>
+<script src="/libs/tocbot/tocbot.min.js"></script>
 <script>
     $(function () {
         tocbot.init({
@@ -1025,7 +1017,7 @@ class Account &#123;
 
     <footer class="page-footer bg-color">
     
-        <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Wendell-Z/posts/libs/aplayer/APlayer.min.css">
+        <link rel="stylesheet" href="/libs/aplayer/APlayer.min.css">
 <style>
     .aplayer .aplayer-lrc p {
         
@@ -1075,7 +1067,7 @@ class Account &#123;
     </div>
 </div>
 
-<script src="https://cdn.jsdelivr.net/gh/Wendell-Z/posts/libs/aplayer/APlayer.min.js"></script>
+<script src="/libs/aplayer/APlayer.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/meting@2/dist/Meting.min.js"></script>
 
     
@@ -1083,7 +1075,7 @@ class Account &#123;
         <div class="col s12 m8 l8 copy-right">
             Copyright&nbsp;&copy;
             
-                <span id="year">2020</span>
+                <span id="year">2020-2021</span>
             
             <span id="year">2020</span>
             <a href="/about" target="_blank">Wendell Zhang</a>
@@ -1092,7 +1084,7 @@ class Account &#123;
             <br>
             
             &nbsp;<i class="fas fa-chart-area"></i>&nbsp;站点总字数:&nbsp;<span
-                class="white-color">54.7k</span>&nbsp;字
+                class="white-color">54.6k</span>&nbsp;字
             
             
             
@@ -1309,12 +1301,12 @@ $(function () {
 </div>
 
 
-    <script src="https://cdn.jsdelivr.net/gh/Wendell-Z/posts/libs/materialize/materialize.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/gh/Wendell-Z/posts/libs/masonry/masonry.pkgd.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/gh/Wendell-Z/posts/libs/aos/aos.js"></script>
-    <script src="https://cdn.jsdelivr.net/gh/Wendell-Z/posts/libs/scrollprogress/scrollProgress.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/gh/Wendell-Z/posts/libs/lightGallery/js/lightgallery-all.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/gh/Wendell-Z/posts/js/matery.js"></script>
+    <script src="/libs/materialize/materialize.min.js"></script>
+    <script src="/libs/masonry/masonry.pkgd.min.js"></script>
+    <script src="/libs/aos/aos.js"></script>
+    <script src="/libs/scrollprogress/scrollProgress.min.js"></script>
+    <script src="/libs/lightGallery/js/lightgallery-all.min.js"></script>
+    <script src="/js/matery.js"></script>
 
     <!-- Baidu Analytics -->
 
@@ -1335,10 +1327,10 @@ $(function () {
 </script>
 
     
-    <script src="https://cdn.jsdelivr.net/gh/Wendell-Z/posts/libs/others/clicklove.js" async="async"></script>
+    <script src="/libs/others/clicklove.js" async="async"></script>
     
     
-    <script async src="https://cdn.jsdelivr.net/gh/Wendell-Z/posts/libs/others/busuanzi.pure.mini.js"></script>
+    <script async src="/libs/others/busuanzi.pure.mini.js"></script>
     
 
     
@@ -1353,7 +1345,7 @@ $(function () {
     
 
     
-    <script src="https://cdn.jsdelivr.net/gh/Wendell-Z/posts/libs/instantpage/instantpage.js" type="module"></script>
+    <script src="/libs/instantpage/instantpage.js" type="module"></script>
     
 
 </body>
