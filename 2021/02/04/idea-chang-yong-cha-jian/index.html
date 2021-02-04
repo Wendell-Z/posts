@@ -4,7 +4,7 @@
 
 <head>
     <meta charset="utf-8">
-    <meta name="keywords" content="Java并发5:死锁, YOLO">
+    <meta name="keywords" content="IDEA常用插件推荐, YOLO">
     <meta name="description" content="">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
@@ -16,7 +16,7 @@
     <!-- Global site tag (gtag.js) - Google Analytics -->
 
 
-    <title>Java并发5:死锁 | YOLO</title>
+    <title>IDEA常用插件推荐 | YOLO</title>
     <link rel="icon" type="image/png" href="/favicon.png">
 
     <link rel="stylesheet" type="text/css" href="/libs/awesome/css/all.css">
@@ -310,12 +310,12 @@
 
 
 
-<div class="bg-cover pd-header post-cover" style="background-image: url('https://images-1252818907.cos.ap-chengdu.myqcloud.com/images/java并发编程.jpg')">
+<div class="bg-cover pd-header post-cover" style="background-image: url('https://images-1252818907.cos.ap-chengdu.myqcloud.com/images/image-20210204225214496.png')">
     <div class="container" style="right: 0px;left: 0px;">
         <div class="row">
             <div class="col s12 m12 l12">
                 <div class="brand">
-                    <h1 class="description center-align post-title">Java并发5:死锁</h1>
+                    <h1 class="description center-align post-title">IDEA常用插件推荐</h1>
                 </div>
             </div>
         </div>
@@ -431,12 +431,12 @@
                     
                     <div class="article-tag">
                         
-                            <a href="/tags/Java/">
-                                <span class="chip bg-color">Java</span>
+                            <a href="/tags/%E6%95%8F%E6%8D%B7%E5%BC%80%E5%8F%91/">
+                                <span class="chip bg-color">敏捷开发</span>
                             </a>
                         
-                            <a href="/tags/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/">
-                                <span class="chip bg-color">并发编程</span>
+                            <a href="/tags/IDEA/">
+                                <span class="chip bg-color">IDEA</span>
                             </a>
                         
                     </div>
@@ -447,8 +447,8 @@
                     <div class="post-cate">
                         <i class="fas fa-bookmark fa-fw icon-category"></i>
                         
-                            <a href="/categories/%E5%90%8E%E7%AB%AF/" class="post-category">
-                                后端
+                            <a href="/categories/%E8%BD%AF%E4%BB%B6%E5%B7%A5%E5%85%B7/" class="post-category">
+                                软件工具
                             </a>
                         
                     </div>
@@ -460,7 +460,7 @@
                 
                 <div class="post-date info-break-policy">
                     <i class="far fa-calendar-minus fa-fw"></i>发布日期:&nbsp;&nbsp;
-                    2020-04-06
+                    2021-02-04
                 </div>
                 
 
@@ -469,7 +469,7 @@
                 
                 <div class="info-break-policy">
                     <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
-                    1.8k
+                    1.1k
                 </div>
                 
 
@@ -494,187 +494,189 @@
 
         <div class="card-content article-card-content">
             <div id="articleContent">
-                <h3 id="Java并发5-死锁"><a href="#Java并发5-死锁" class="headerlink" title="Java并发5:死锁"></a>Java并发5:死锁</h3><p>上篇文章中转账加锁使用了<code>Account.class</code>，实际开发中肯定不可行。性能上无法接受，需采用更细粒度的锁。</p>
-<h3 id="采用细粒度锁带来问题"><a href="#采用细粒度锁带来问题" class="headerlink" title="采用细粒度锁带来问题"></a>采用细粒度锁带来问题</h3><h4 id="采用细粒度锁优化性能"><a href="#采用细粒度锁优化性能" class="headerlink" title="采用细粒度锁优化性能"></a>采用细粒度锁优化性能</h4><p>即在<code>transfer()</code>方法内部，先尝试锁定转出账户 <code>this</code>（先把转出账本拿到），然后尝试锁定转入账户<code> target</code>（再把转入账本拿到手），只有当两者都成功时，才执行转账操作。</p>
-<p><img src="https://images-1252818907.cos.ap-chengdu.myqcloud.com/images/%E4%B8%A4%E4%B8%AA%E8%BD%AC%E8%B4%A6%E6%93%8D%E4%BD%9C%E5%B9%B6%E8%A1%8C%E7%A4%BA%E6%84%8F%E5%9B%BE.png" alt="两个转账操作并行示意图"></p>
-<p>代码示例：</p>
-<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">class</span> <span class="token class-name">Account</span> <span class="token punctuation">&#123;</span>
-  <span class="token keyword">private</span> <span class="token keyword">int</span> balance<span class="token punctuation">;</span>
-  <span class="token comment">// 转账</span>
-  <span class="token keyword">void</span> <span class="token function">transfer</span><span class="token punctuation">(</span><span class="token class-name">Account</span> target<span class="token punctuation">,</span> <span class="token keyword">int</span> amt<span class="token punctuation">)</span><span class="token punctuation">&#123;</span>
-    <span class="token comment">// 锁定转出账户</span>
-    <span class="token keyword">synchronized</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>              
-      <span class="token comment">// 锁定转入账户</span>
-      <span class="token keyword">synchronized</span><span class="token punctuation">(</span>target<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>           
-        <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">.</span>balance <span class="token operator">></span> amt<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
-          <span class="token keyword">this</span><span class="token punctuation">.</span>balance <span class="token operator">-=</span> amt<span class="token punctuation">;</span>
-          target<span class="token punctuation">.</span>balance <span class="token operator">+=</span> amt<span class="token punctuation">;</span>
-        <span class="token punctuation">&#125;</span>
-      <span class="token punctuation">&#125;</span>
-    <span class="token punctuation">&#125;</span>
-  <span class="token punctuation">&#125;</span> 
-<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-
-<h4 id="产生死锁"><a href="#产生死锁" class="headerlink" title="产生死锁"></a>产生死锁</h4><p><strong>死锁：一组互相竞争资源的线程因互相等待，导致“永久”阻塞的现象。</strong></p>
-<p>上面代码会产生死锁，A向B转账，B向A转账时。</p>
+                <h3 id="IDEA常用插件推荐"><a href="#IDEA常用插件推荐" class="headerlink" title="IDEA常用插件推荐"></a>IDEA常用插件推荐</h3><p>推荐几款常用的IDEA插件：(不定期更新)</p>
 <ul>
-<li>A进入第6行锁定了对象A，B进入第6行锁定了对象B。</li>
-<li>A进入第8行尝试获取对象B，B进入第8行尝试获取对象A。</li>
-<li>此时A和B都占有了对方想要获取的资源，产生了阻塞。</li>
+<li>IDE Eval Reset ——曲线救国式获得IDEA专业版永久使用权</li>
+<li>Background Image Plus + ——为你的IDEA设置背景图片</li>
+<li>CodeGlance ——为你的代码生成缩略图，方便浏览</li>
+<li>Grep Console ——为控制台不同级别的日志设置颜色，方便调试</li>
+<li>Rainbow Brackets —— 自动将代码中的括号标签等生成颜色，方便区分</li>
+<li>Statistic —— 统计代码行数</li>
+<li>Translation —— 实时翻译，看源码文档的时候很方便找翻译</li>
+<li>Material Theme UI —— 提供十几种主题和自定义主题，让你的IDEA变得好看起来</li>
+<li>Atom Material Icons —— 替换IDEA中的所有图标，对按钮和文件夹的表现更美观和清晰</li>
+<li>Free MyBatis plugin —— 生成XML文件/提供mapper接口与XML文件跳转按钮/Mybatis自动补全和语法提示</li>
+<li>Easy Code —— 根据数据库中的表一键生成entity/controller/service/dao/mapper</li>
 </ul>
-<h3 id="死锁"><a href="#死锁" class="headerlink" title="死锁"></a>死锁</h3><p><strong>死锁：一组互相竞争资源的线程因互相等待，导致“永久”阻塞的现象。</strong></p>
-<h4 id="死锁产生的条件"><a href="#死锁产生的条件" class="headerlink" title="死锁产生的条件"></a>死锁产生的条件</h4><ul>
-<li>互斥，共享资源X和Y只能被一个线程占用。</li>
-<li>占有且等待，线程 T1 已经取得共享资源 X，在等待共享资源 Y 的时候，不释放共享资源 X；</li>
-<li>不可抢占，其他线程不能强行抢占线程 T1 占有的资源；</li>
-<li>循环等待，线程 T1 等待线程 T2 占有的资源，线程 T2 等待线程 T1 占有的资源，就是循环等待。</li>
-</ul>
-<h4 id="避免死锁"><a href="#避免死锁" class="headerlink" title="避免死锁"></a>避免死锁</h4><p>破坏上述任意条件。</p>
+<h4 id="IDE-Eval-Reset"><a href="#IDE-Eval-Reset" class="headerlink" title="IDE Eval Reset"></a>IDE Eval Reset</h4><p>如何不花钱获得IDEA专业版的使用权？</p>
 <ul>
-<li><p>互斥这个条件没有办法破坏，因为用锁为的就是互斥。</p>
-</li>
-<li><p>对于“占用且等待”，可以一次性申请所有的资源，这样就不存在等待了。</p>
-</li>
-<li><p>对于“不可抢占”，占用部分资源的线程进一步申请其他资源时，如果申请不到，可以主动释放它占有的资源。</p>
-<p>  note:可能出现活锁问题，要等待随机时间。</p>
-</li>
-<li><p>对于“循环等待”，可以按序申请资源。按序申请，是指资源是有线性顺序的，申请的时候可以先申请资源序号小的，再申请资源序号大的，这样线性化后自然就不存在循环了。</p>
-</li>
+<li><del>网上找激活码</del></li>
+<li><del>用破解软件</del></li>
+<li><del>试用30天</del></li>
 </ul>
-<h4 id="具体方法"><a href="#具体方法" class="headerlink" title="具体方法"></a>具体方法</h4><ul>
-<li><p>破坏占有且等待条件</p>
-<p>  一次性申请所有资源，通过类<code>Allocator</code>一次性申请，申请到了返回<code>true</code>。</p>
-<p>  线程执行<code>transfer()</code>方法时循环判断直到申请到了所有必须的资源，再进行转账。</p>
-</li>
-</ul>
-<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">class</span> <span class="token class-name">Allocator</span> <span class="token punctuation">&#123;</span>
-  <span class="token keyword">private</span> <span class="token class-name">List</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">Object</span><span class="token punctuation">></span></span> als <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">ArrayList</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token punctuation">></span></span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-  <span class="token comment">// 一次性申请所有资源，多个线程同时申请，加锁保证apply()方法对外部表现原子性</span>
-  <span class="token keyword">synchronized</span> <span class="token keyword">boolean</span> <span class="token function">apply</span><span class="token punctuation">(</span><span class="token class-name">Object</span> from<span class="token punctuation">,</span> <span class="token class-name">Object</span> <span class="token keyword">to</span><span class="token punctuation">)</span><span class="token punctuation">&#123;</span>
-    <span class="token comment">//如果als集合中有任意一个资源，说明Allocator已经完成了所有资源的申请  </span>
-    <span class="token keyword">if</span><span class="token punctuation">(</span>als<span class="token punctuation">.</span><span class="token function">contains</span><span class="token punctuation">(</span>from<span class="token punctuation">)</span> <span class="token operator">||</span> als<span class="token punctuation">.</span><span class="token function">contains</span><span class="token punctuation">(</span><span class="token keyword">to</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">&#123;</span>
-      <span class="token keyword">return</span> <span class="token boolean">false</span><span class="token punctuation">;</span>  
-    <span class="token punctuation">&#125;</span> <span class="token keyword">else</span> <span class="token punctuation">&#123;</span>
-      <span class="token comment">//als集合一个资源都没有，进行添加。 </span>
-      als<span class="token punctuation">.</span><span class="token function">add</span><span class="token punctuation">(</span>from<span class="token punctuation">)</span><span class="token punctuation">;</span>
-      als<span class="token punctuation">.</span><span class="token function">add</span><span class="token punctuation">(</span><span class="token keyword">to</span><span class="token punctuation">)</span><span class="token punctuation">;</span>  
-    <span class="token punctuation">&#125;</span>
-    <span class="token comment">//申请资源完毕，返回true</span>
-    <span class="token keyword">return</span> <span class="token boolean">true</span><span class="token punctuation">;</span>
-  <span class="token punctuation">&#125;</span>
-  <span class="token comment">// 归还资源</span>
-  <span class="token keyword">synchronized</span> <span class="token keyword">void</span> <span class="token function">free</span><span class="token punctuation">(</span>
-    <span class="token class-name">Object</span> from<span class="token punctuation">,</span> <span class="token class-name">Object</span> <span class="token keyword">to</span><span class="token punctuation">)</span><span class="token punctuation">&#123;</span>
-    als<span class="token punctuation">.</span><span class="token function">remove</span><span class="token punctuation">(</span>from<span class="token punctuation">)</span><span class="token punctuation">;</span>
-    als<span class="token punctuation">.</span><span class="token function">remove</span><span class="token punctuation">(</span><span class="token keyword">to</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-  <span class="token punctuation">&#125;</span>
-<span class="token punctuation">&#125;</span>
-
-<span class="token keyword">class</span> <span class="token class-name">Account</span> <span class="token punctuation">&#123;</span>
-  <span class="token comment">// actr应该为单例</span>
-  <span class="token keyword">private</span> <span class="token class-name">Allocator</span> actr<span class="token punctuation">;</span>
-  <span class="token keyword">private</span> <span class="token keyword">int</span> balance<span class="token punctuation">;</span>
-  <span class="token comment">// 转账</span>
-  <span class="token keyword">void</span> <span class="token function">transfer</span><span class="token punctuation">(</span><span class="token class-name">Account</span> target<span class="token punctuation">,</span> <span class="token keyword">int</span> amt<span class="token punctuation">)</span><span class="token punctuation">&#123;</span>
-    <span class="token comment">// 一次性申请转出账户和转入账户，直到成功</span>
-    <span class="token keyword">while</span><span class="token punctuation">(</span><span class="token operator">!</span>actr<span class="token punctuation">.</span><span class="token function">apply</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">,</span> target<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token keyword">try</span><span class="token punctuation">&#123;</span>
-      <span class="token comment">// 锁定转出账户</span>
-      <span class="token keyword">synchronized</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">)</span><span class="token punctuation">&#123;</span>              
-        <span class="token comment">// 锁定转入账户</span>
-        <span class="token keyword">synchronized</span><span class="token punctuation">(</span>target<span class="token punctuation">)</span><span class="token punctuation">&#123;</span>           
-          <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">.</span>balance <span class="token operator">></span> amt<span class="token punctuation">)</span><span class="token punctuation">&#123;</span>
-            <span class="token keyword">this</span><span class="token punctuation">.</span>balance <span class="token operator">-=</span> amt<span class="token punctuation">;</span>
-            target<span class="token punctuation">.</span>balance <span class="token operator">+=</span> amt<span class="token punctuation">;</span>
-          <span class="token punctuation">&#125;</span>
-        <span class="token punctuation">&#125;</span>
-      <span class="token punctuation">&#125;</span>
-    <span class="token punctuation">&#125;</span> <span class="token keyword">finally</span> <span class="token punctuation">&#123;</span>
-      actr<span class="token punctuation">.</span><span class="token function">free</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">,</span> target<span class="token punctuation">)</span>
-    <span class="token punctuation">&#125;</span>
-  <span class="token punctuation">&#125;</span> 
-<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-
+<p>如果有一种方法，能够无限延长IDEA专业版的试用时间，其实就跟永久使用一样。</p>
 <ul>
-<li><p>破坏不可抢占条件</p>
-<p>  <code>synchronized </code>是做不到的。原因是<code> synchronized</code> 申请资源的时候，如果申请不到，线程直接进入阻塞状态，而线程进入阻塞状态，啥都干不了，也释放不了线程已经占有的资源。</p>
-<p>  <code>java.util.concurrent</code> 这个包下面提供的<code> Lock</code> 可以解决，见XXX。</p>
+<li><p>获得方式</p>
+<ol>
+<li>插件市场安装<ul>
+<li>在<code>Settings/Preferences...</code> -&gt; <code>Plugins</code> 内手动添加第三方插件仓库地址：<code>https://plugins.zhile.io</code></li>
+<li>搜索：<code>IDE Eval Reset</code>插件进行安装。如果搜索不到请注意是否做好了上一步？网络是否通畅？</li>
+<li>插件会提示安装成功。</li>
+</ul>
 </li>
-<li><p>破坏循环等待条件</p>
-<p>  破坏这个条件，需要对资源进行排序，然后按序申请资源。</p>
-<p>  假设每个账户都有不同的属性<code> id</code>，这个<code>id</code>可以作为排序字段，申请的时候，可以按从小到大的顺序来申请。比如下面代码，①~⑥处的代码对转出账户（<code>this</code>）和转入账户（<code>target</code>）排序，然后按照序号从小到大的顺序锁定账户。这样就不存在“循环”等待了。</p>
+<li>下载安装<ul>
+<li>点击这个<a target="_blank" rel="noopener" href="https://plugins.zhile.io/files/ide-eval-resetter-2.1.13.zip">链接(v2.1.13)</a>下载插件的<code>zip</code>包（macOS可能会自动解压，然后把<code>zip</code>包丢进回收站）</li>
+<li>通常可以直接把<code>zip</code>包拖进IDE的窗口来进行插件的安装。如果无法拖动安装，你可以在<code>Settings/Preferences...</code> -&gt; <code>Plugins</code> 里手动安装插件（<code>Install Plugin From Disk...</code>）</li>
+<li>插件会提示安装成功。</li>
+</ul>
+</li>
+</ol>
+</li>
+<li><p>使用方式</p>
+<ul>
+<li><p>安装好插件，重启IDEA后，插件就已经开始工作，它会获取你当前IDEA的试用信息，用于重置试用时间。</p>
+</li>
+<li><p>当你超过25天没有重置试用时间后，插件会自动弹出通知框通知你是否重置试用时间。重置后，会继续获得30天的试用时间。</p>
+</li>
+<li><p>也可以主动唤起插件界面</p>
+<ul>
+<li><p>如果IDE没有打开项目，在<code>Welcome</code>界面点击菜单：<code>Get Help</code> -&gt; <code>Eval Reset</code></p>
+</li>
+<li><p>如果IDE打开了项目，点击菜单：<code>Help</code> -&gt; <code>Eval Reset</code></p>
+</li>
+<li><p>如图所示</p>
+<p><img src="https://images-1252818907.cos.ap-chengdu.myqcloud.com/images/image-20210204205019356.png" alt="插件主界面"></p>
+</li>
+<li><p>左边两个红色框，显示了上次重置时间和试用到期时间</p>
+<p><img src="https://images-1252818907.cos.ap-chengdu.myqcloud.com/images/image-20210204205209606.png" alt="试用时间信息"></p>
+<p>也可以通过<code>Help</code> -&gt; <code>About</code>查看</p>
+<p><img src="https://images-1252818907.cos.ap-chengdu.myqcloud.com/images/image-20210204205315856.png" alt="验证试用时间"></p>
+</li>
+<li><p>右下角勾选<code>Auto reset before per start</code>，即插件在每次重启的时候都会重置试用信息。（一劳永逸式操作）</p>
+</li>
+<li><p><code>RESET</code>按钮是手动重置试用信息，<code>RELOAD</code>按钮是重置后加载试用信息。</p>
 </li>
 </ul>
-<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">class</span> <span class="token class-name">Account</span> <span class="token punctuation">&#123;</span>
-  <span class="token keyword">private</span> <span class="token keyword">int</span> id<span class="token punctuation">;</span>
-  <span class="token keyword">private</span> <span class="token keyword">int</span> balance<span class="token punctuation">;</span>
-  <span class="token comment">// 转账</span>
-  <span class="token keyword">void</span> <span class="token function">transfer</span><span class="token punctuation">(</span><span class="token class-name">Account</span> target<span class="token punctuation">,</span> <span class="token keyword">int</span> amt<span class="token punctuation">)</span><span class="token punctuation">&#123;</span>
-    <span class="token class-name">Account</span> left <span class="token operator">=</span> <span class="token keyword">this</span>        ①
-    <span class="token class-name">Account</span> right <span class="token operator">=</span> target<span class="token punctuation">;</span>    ②
-    <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">.</span>id <span class="token operator">></span> target<span class="token punctuation">.</span>id<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span> ③
-      left <span class="token operator">=</span> target<span class="token punctuation">;</span>           ④
-      right <span class="token operator">=</span> <span class="token keyword">this</span><span class="token punctuation">;</span>            ⑤
-    <span class="token punctuation">&#125;</span>                          ⑥
-    <span class="token comment">// 锁定序号小的账户</span>
-    <span class="token keyword">synchronized</span><span class="token punctuation">(</span>left<span class="token punctuation">)</span><span class="token punctuation">&#123;</span>
-      <span class="token comment">// 锁定序号大的账户</span>
-      <span class="token keyword">synchronized</span><span class="token punctuation">(</span>right<span class="token punctuation">)</span><span class="token punctuation">&#123;</span> 
-        <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">.</span>balance <span class="token operator">></span> amt<span class="token punctuation">)</span><span class="token punctuation">&#123;</span>
-          <span class="token keyword">this</span><span class="token punctuation">.</span>balance <span class="token operator">-=</span> amt<span class="token punctuation">;</span>
-          target<span class="token punctuation">.</span>balance <span class="token operator">+=</span> amt<span class="token punctuation">;</span>
-        <span class="token punctuation">&#125;</span>
-      <span class="token punctuation">&#125;</span>
-    <span class="token punctuation">&#125;</span>
-  <span class="token punctuation">&#125;</span> 
-<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-
-<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>用<strong>细粒度锁</strong>来锁定多个资源时，要注意<strong>死锁</strong>的问题。</p>
-<p>需要能把它强化为一个思维定势，遇到这种场景，马上想到可能存在死锁问题。</p>
-<p>当知道风险之后，才有机会谈如何预防和避免，因此，识别出风险很重要。</p>
-<p><strong>转账例子中，破坏占用且等待条件的成本就比破坏循环等待条件的成本高。</strong></p>
-<p><strong>破坏占用且等待条件，也是锁了所有的账户，而且还是用了死循环while(!actr.apply(this, target));方法，不过好在 apply() 这个方法基本不耗时。</strong></p>
-<p><strong>转账例子中，破坏循环等待条件就是成本最低的一个方案。</strong></p>
-<p>所以在选择具体方案的时候，还需要评估一下操作成本，从中选择一个成本最低的方案。</p>
-<h3 id="思考"><a href="#思考" class="headerlink" title="思考"></a>思考</h3><p><code>while(!actr.apply(this, target));</code>与<code>synchronized(Account.class) </code>有无性能优势呢？</p>
-<p>前者只锁了转账操作，后者锁了账户所有操作。</p>
-<h3 id="别人的总结"><a href="#别人的总结" class="headerlink" title="别人的总结"></a>别人的总结</h3><blockquote>
-<p>老师，请问一下，在实际的开发中，account对象应该是从数据库中查询出来的吧，假如A转B，C转B一起执行，那B的account对象如何保证是同一个对象，不太理解。。。</p>
-<p>——<strong>几字凉了秋丶</strong></p>
-<blockquote>
-<p>实际开发中都是用数据库事务+乐观锁的方式解决的。这个就是个例子，为了说明死锁是怎么回事，以及死锁问题怎么解决。</p>
-<p>——<strong>作者</strong></p>
-</blockquote>
-</blockquote>
-<blockquote>
-<p>老师，感觉下面的代码也能避免死锁，并且能实现功能：</p>
-<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token operator">></span><span class="token keyword">void</span> <span class="token function">transfer</span><span class="token punctuation">(</span><span class="token class-name">Account</span> target<span class="token punctuation">,</span> <span class="token keyword">int</span> amt<span class="token punctuation">)</span><span class="token punctuation">&#123;</span>
- <span class="token keyword">boolean</span> isTransfer <span class="token operator">=</span> <span class="token boolean">false</span><span class="token punctuation">;</span>
-<span class="token operator">></span><span class="token comment">// 锁定转出账户</span>
- <span class="token keyword">synchronized</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">)</span><span class="token punctuation">&#123;</span>
-    <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">.</span>balance <span class="token operator">></span> amt<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
-    <span class="token keyword">this</span><span class="token punctuation">.</span>balance <span class="token operator">-=</span> amt<span class="token punctuation">;</span>
-    isTransfer <span class="token operator">=</span> <span class="token boolean">true</span><span class="token punctuation">;</span>
- <span class="token punctuation">&#125;</span>
- <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>isTransfer<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
-    <span class="token keyword">return</span><span class="token punctuation">;</span>
- <span class="token punctuation">&#125;</span>
-  <span class="token comment">// 锁定转入账户</span>
-  <span class="token keyword">synchronized</span><span class="token punctuation">(</span>target<span class="token punctuation">)</span><span class="token punctuation">&#123;</span>
-    target<span class="token punctuation">.</span>balance <span class="token operator">+=</span> amt<span class="token punctuation">;</span>
-  <span class="token punctuation">&#125;</span>
-<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-
-<p>反映到现实中的场景：服务员A拿到账本1先判断余额够不够，够的话先扣款，再等待其他人操作完账本2，才增加它的额度。</p>
-<p>但是这样转账和到账就存在一个时差，现实生活中也是这样，转账不会立马到账，短信提醒24小时内到账，所谓的最终一致性。</p>
-<p>老师帮忙看看这样实现会不会有啥其他问题？</p>
-<p>——<strong>Bright丶</strong></p>
-<blockquote>
-<p>实际中也有这么做的，只不过是把转入操作放到mq里，mq消费失败会重试，所以能保证最终一致性。</p>
-<p>——<strong>作者</strong></p>
-</blockquote>
-</blockquote>
-
+</li>
+</ul>
+</li>
+<li><p>更新方式</p>
+<ul>
+<li>IDEA会自动检查插件更新，提示更新</li>
+<li>从<a target="_blank" rel="noopener" href="https://zhile.io/2020/11/18/jetbrains-eval-reset.html">Jetbrains系列产品重置试用方法</a>页面获取最新zip包</li>
+</ul>
+</li>
+<li><p>注意</p>
+<p><strong>重置需要重启IDEA!</strong></p>
+<p><strong>别乱更新升级IDEA！</strong></p>
+</li>
+<li><p>插件作者</p>
+<p><a target="_blank" rel="noopener" href="https://zhile.io/">知了</a></p>
+</li>
+</ul>
+<h4 id="Background-Image-Plus"><a href="#Background-Image-Plus" class="headerlink" title="Background Image Plus +"></a>Background Image Plus +</h4><ul>
+<li><p>功能点：</p>
+<ul>
+<li>设置背景图片</li>
+<li>固定时间随机切换</li>
+<li>设置图片透明度</li>
+</ul>
+</li>
+<li><p>获得方式</p>
+<p>插件市场搜索并安装</p>
+</li>
+<li><p>使用</p>
+<ul>
+<li><p><code>File</code> -&gt; <code>Settings</code> -&gt; <code>Appearance &amp; Behavior</code> -&gt;<code>Background Image Plus</code></p>
+<p><img src="https://images-1252818907.cos.ap-chengdu.myqcloud.com/images/image-20210204210835871.png" alt="插件设置页面"></p>
+<p>如图，可以设置图片所在的文件夹，图片切换时间，图片切换模式，是否保持一张图片不变等。</p>
+</li>
+<li><p><code>File</code> -&gt; <code>Settings</code> -&gt; <code>Appearance &amp; Behavior</code> -&gt; <code>Background Image</code>按钮</p>
+<p><img src="https://images-1252818907.cos.ap-chengdu.myqcloud.com/images/image-20210204211344200.png" alt="设置图片属性"></p>
+<p><img src="https://images-1252818907.cos.ap-chengdu.myqcloud.com/images/image-20210204211425263.png" alt="image-20210204211425263"></p>
+<p>点击<code>BACKGROUND IMAGE</code>按钮可以设置单张图片的属性，如透明度，填充模式等。</p>
+</li>
+<li><p><code>View</code> -&gt; <code>Background Image Plus</code> 可以切换图片</p>
+<p><img src="https://images-1252818907.cos.ap-chengdu.myqcloud.com/images/image-20210204211657140.png" alt="点击切换图片"></p>
+</li>
+</ul>
+</li>
+<li><p>效果图</p>
+<p><img src="https://images-1252818907.cos.ap-chengdu.myqcloud.com/images/image-20210204211740084.png" alt="效果图"></p>
+</li>
+</ul>
+<h4 id="CodeGlance"><a href="#CodeGlance" class="headerlink" title="CodeGlance"></a>CodeGlance</h4><ul>
+<li><p>使用</p>
+<p>插件市场搜索安装后即可使用</p>
+</li>
+<li><p>设置</p>
+<p><code>File</code> -&gt; <code>Settings</code> -&gt; <code>Other Settings</code> -&gt; <code>CodeGlance</code>进行自定义化的设置</p>
+<p><img src="https://images-1252818907.cos.ap-chengdu.myqcloud.com/images/image-20210204215601337.png" alt="设置选项"></p>
+</li>
+<li><p>效果</p>
+<p>这样查找代码和拖动十分方便</p>
+<p><img src="https://images-1252818907.cos.ap-chengdu.myqcloud.com/images/image-20210204213138304.png" alt="效果图"></p>
+</li>
+</ul>
+<h4 id="Grep-Console"><a href="#Grep-Console" class="headerlink" title="Grep Console"></a>Grep Console</h4><ul>
+<li><p>插件市场搜索安装</p>
+</li>
+<li><p>设置</p>
+<p><code>File</code> -&gt; <code>Settings</code> -&gt; <code>Other Settings</code> -&gt; <code>Grep Console</code>进行自定义化的设置</p>
+<p><img src="https://images-1252818907.cos.ap-chengdu.myqcloud.com/images/image-20210204220101252.png" alt="image-20210204220101252"></p>
+</li>
+<li><p>效果图</p>
+<p><img src="https://images-1252818907.cos.ap-chengdu.myqcloud.com/images/image-20210204215336103.png" alt="效果图"></p>
+</li>
+</ul>
+<h4 id="Rainbow-Brackets"><a href="#Rainbow-Brackets" class="headerlink" title="Rainbow Brackets"></a>Rainbow Brackets</h4><ul>
+<li><p>插件市场搜索安装</p>
+</li>
+<li><p>设置</p>
+<p><code>File</code> -&gt; <code>Settings</code> -&gt; <code>Other Settings</code> -&gt; <code>Rainbow Brackets</code>进行自定义化的设置</p>
+<p><img src="https://images-1252818907.cos.ap-chengdu.myqcloud.com/images/image-20210204215641644.png" alt="效果图"></p>
+</li>
+<li><p>效果图</p>
+<p><img src="https://images-1252818907.cos.ap-chengdu.myqcloud.com/images/image-20210204215440484.png" alt="效果图"></p>
+</li>
+</ul>
+<h4 id="Statistic"><a href="#Statistic" class="headerlink" title="Statistic"></a>Statistic</h4><ul>
+<li><p>插件市场搜索安装</p>
+</li>
+<li><p>更多的功能可以自己去探索啦</p>
+</li>
+<li><p>效果图</p>
+<p><img src="https://images-1252818907.cos.ap-chengdu.myqcloud.com/images/image-20210204220707662.png" alt="效果图"></p>
+</li>
+</ul>
+<h4 id="Translation"><a href="#Translation" class="headerlink" title="Translation"></a>Translation</h4><ul>
+<li><p>插件市场搜索安装</p>
+</li>
+<li><p>设置</p>
+<p><code>File</code> -&gt; <code>Settings</code> -&gt; <code>Tools</code> -&gt; <code>Translation</code></p>
+<p><img src="https://images-1252818907.cos.ap-chengdu.myqcloud.com/images/image-20210204220941832.png" alt="设置界面"></p>
+</li>
+<li><p>效果图</p>
+<p><img src="https://images-1252818907.cos.ap-chengdu.myqcloud.com/images/image-20210204221120095.png" alt="效果图1"></p>
+<p><img src="https://images-1252818907.cos.ap-chengdu.myqcloud.com/images/image-20210204221101972.png" alt="效果图2"></p>
+</li>
+</ul>
+<h4 id="Material-Theme-UI"><a href="#Material-Theme-UI" class="headerlink" title="Material Theme UI"></a>Material Theme UI</h4><ul>
+<li><p>插件市场安装下载</p>
+<p><img src="https://images-1252818907.cos.ap-chengdu.myqcloud.com/images/image-20210204221353291.png" alt="默认十几种主题"></p>
+<p><img src="https://images-1252818907.cos.ap-chengdu.myqcloud.com/images/image-20210204221527635.png" alt="自定义主题"></p>
+</li>
+<li><p>效果图<img src="https://images-1252818907.cos.ap-chengdu.myqcloud.com/images/image-20210204221958146.png" alt="效果图"></p>
+</li>
+</ul>
+<h4 id="Atom-Material-Icons"><a href="#Atom-Material-Icons" class="headerlink" title="Atom Material Icons"></a>Atom Material Icons</h4><ul>
+<li><p>插件市场搜索下载安装</p>
+</li>
+<li><p>效果图（图标）</p>
+<p><img src="https://images-1252818907.cos.ap-chengdu.myqcloud.com/images/image-20210204224912942.png" alt="效果图"></p>
+</li>
+</ul>
+<h4 id="待更新"><a href="#待更新" class="headerlink" title="待更新"></a>待更新</h4>
                 
             </div>
             <hr/>
@@ -700,7 +702,7 @@
                     </i>
                 </span>
                 <span class="reprint-info">
-                    <a href="https://wendell-z.github.io/posts/2020/04/06/java-bing-fa-5-si-suo/">https://wendell-z.github.io/posts/2020/04/06/java-bing-fa-5-si-suo/</a>
+                    <a href="https://wendell-z.github.io/posts/2021/02/04/idea-chang-yong-cha-jian/">https://wendell-z.github.io/posts/2021/02/04/idea-chang-yong-cha-jian/</a>
                 </span>
             </div>
             <div class="reprint__notice">
@@ -738,12 +740,12 @@
                     
                         <div class="article-tag">
                             
-                                <a href="/tags/Java/">
-                                    <span class="chip bg-color">Java</span>
+                                <a href="/tags/%E6%95%8F%E6%8D%B7%E5%BC%80%E5%8F%91/">
+                                    <span class="chip bg-color">敏捷开发</span>
                                 </a>
                             
-                                <a href="/tags/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/">
-                                    <span class="chip bg-color">并发编程</span>
+                                <a href="/tags/IDEA/">
+                                    <span class="chip bg-color">IDEA</span>
                                 </a>
                             
                         </div>
@@ -787,49 +789,51 @@
 <article id="prenext-posts" class="prev-next articles">
     <div class="row article-row">
         
-        <div class="article col s12 m6" data-aos="fade-up">
+        <div class="article col s12 m6" data-aos="fade-up" data-aos="fade-up">
             <div class="article-badge left-badge text-color">
-                <i class="fas fa-chevron-left"></i>&nbsp;上一篇</div>
+                <i class="far fa-dot-circle"></i>&nbsp;本篇
+            </div>
             <div class="card">
-                <a href="/2020/04/06/java-bing-fa-6-deng-dai-tong-zhi-ji-zhi/">
+                <a href="/2021/02/04/idea-chang-yong-cha-jian/">
                     <div class="card-image">
                         
-                        <img src="https://images-1252818907.cos.ap-chengdu.myqcloud.com/images/java并发编程.jpg" class="responsive-img" alt="Java并发6:等待通知机制">
+                        <img src="https://images-1252818907.cos.ap-chengdu.myqcloud.com/images/image-20210204225214496.png" class="responsive-img" alt="IDEA常用插件推荐">
                         
-                        <span class="card-title">Java并发6:等待通知机制</span>
+                        <span class="card-title">IDEA常用插件推荐</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
                     <div class="summary block-with-text">
                         
-                            等待通知机制优化循环等待
+                            事半功倍的效率
                         
                     </div>
                     <div class="publish-info">
-                        <span class="publish-date">
-                            <i class="far fa-clock fa-fw icon-date"></i>2020-04-06
-                        </span>
+                            <span class="publish-date">
+                                <i class="far fa-clock fa-fw icon-date"></i>2021-02-04
+                            </span>
                         <span class="publish-author">
                             
                             <i class="fas fa-bookmark fa-fw icon-category"></i>
                             
-                            <a href="/categories/%E5%90%8E%E7%AB%AF/" class="post-category">
-                                    后端
+                            <a href="/categories/%E8%BD%AF%E4%BB%B6%E5%B7%A5%E5%85%B7/" class="post-category">
+                                    软件工具
                                 </a>
                             
                             
                         </span>
                     </div>
                 </div>
+
                 
                 <div class="card-action article-tags">
                     
-                    <a href="/tags/Java/">
-                        <span class="chip bg-color">Java</span>
+                    <a href="/tags/%E6%95%8F%E6%8D%B7%E5%BC%80%E5%8F%91/">
+                        <span class="chip bg-color">敏捷开发</span>
                     </a>
                     
-                    <a href="/tags/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/">
-                        <span class="chip bg-color">并发编程</span>
+                    <a href="/tags/IDEA/">
+                        <span class="chip bg-color">IDEA</span>
                     </a>
                     
                 </div>
@@ -843,23 +847,23 @@
                 下一篇&nbsp;<i class="fas fa-chevron-right"></i>
             </div>
             <div class="card">
-                <a href="/2020/04/06/java-bing-fa-4-hu-chi-suo-xia/">
+                <a href="/2020/12/16/java-bing-fa-21-yuan-zi-lei-wu-suo-gong-ju-lei-de-dian-fan/">
                     <div class="card-image">
                         
-                        <img src="https://images-1252818907.cos.ap-chengdu.myqcloud.com/images/java并发编程.jpg" class="responsive-img" alt="Java并发4:互斥锁(下)">
+                        <img src="https://images-1252818907.cos.ap-chengdu.myqcloud.com/images/java并发编程.jpg" class="responsive-img" alt="Java并发21-原子类：无锁工具类的典范">
                         
-                        <span class="card-title">Java并发4:互斥锁(下)</span>
+                        <span class="card-title">Java并发21-原子类：无锁工具类的典范</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
                     <div class="summary block-with-text">
                         
-                            一把锁保护多个资源
+                            无锁工具类的典范
                         
                     </div>
                     <div class="publish-info">
                             <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2020-04-06
+                                <i class="far fa-clock fa-fw icon-date"></i>2020-12-16
                             </span>
                         <span class="publish-author">
                             
