@@ -570,7 +570,7 @@
 <p>S:性能加速比</p>
 <p><strong>假设串行百分比为5%，那么n即使无穷大，也只能提升20倍性能，所以关键在于如何减少串行百分比。</strong></p>
 <h5 id="如何避免锁带来的性能问题"><a href="#如何避免锁带来的性能问题" class="headerlink" title="如何避免锁带来的性能问题"></a>如何避免锁带来的性能问题</h5><p>1、使用无锁的算法和数据结构。</p>
-<p>例如线程本地存储 (Thread Local Storage, TLS)、写入时复制 (Copy-on-write)、乐观锁等；Java 并发包里面的原子类也是一种无锁的数据结构；Disruptor 则是一个无锁的内存队列，性能都非常好等等。</p>
+<p>例如线程本地存储 （Thread Local Storage, TLS）、写入时复制 （Copy-on-write）、乐观锁等；Java 并发包里面的原子类也是一种无锁的数据结构；Disruptor 则是一个无锁的内存队列，性能都非常好等等。</p>
 <p>2、减少锁持有的时间。</p>
 <p><strong>互斥锁本质上是将并行的程序串行化，所以要增加并行度，一定要减少持有锁的时间。</strong></p>
 <p>例如使用细粒度的锁，一个典型的例子就是 Java 并发包里的 ConcurrentHashMap，它使用了所谓分段锁的技术；还可以使用读写锁，也就是读是无锁的，只有写的时候才会互斥。</p>
@@ -974,6 +974,7 @@
 
 
 
+
 <!-- 代码块功能依赖 -->
 <script type="text/javascript" src="/libs/codeBlock/codeBlockFuction.js"></script>
 
@@ -991,6 +992,14 @@
 
 <script type="text/javascript" src="/libs/codeBlock/codeShrink.js"></script>
 
+
+<script src="https://utteranc.es/client.js"
+        repo="Wendell-Z/comments"
+        issue-term="pathname"
+        theme="github-light"
+        crossorigin="anonymous"
+        async>
+</script>
 
     </div>
     <div id="toc-aside" class="expanded col l3 hide-on-med-and-down">
