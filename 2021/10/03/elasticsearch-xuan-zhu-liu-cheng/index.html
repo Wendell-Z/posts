@@ -4,7 +4,7 @@
 
 <head>
     <meta charset="utf-8">
-    <meta name="keywords" content="Java并发21-原子类：无锁工具类的典范, Wendell-Z">
+    <meta name="keywords" content="Elasticsearch选主流程, Wendell-Z">
     <meta name="description" content="">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
@@ -16,7 +16,7 @@
     <!-- Global site tag (gtag.js) - Google Analytics -->
 
 
-    <title>Java并发21-原子类：无锁工具类的典范 | Wendell-Z</title>
+    <title>Elasticsearch选主流程 | Wendell-Z</title>
     <link rel="icon" type="image/png" href="/favicon.png">
 
     <link rel="stylesheet" type="text/css" href="/libs/awesome/css/all.css">
@@ -310,12 +310,12 @@
 
 
 
-<div class="bg-cover pd-header post-cover" style="background-image: url('https://images-1252818907.cos.ap-chengdu.myqcloud.com/images/java并发编程.jpg')">
+<div class="bg-cover pd-header post-cover" style="background-image: url('https://images-1252818907.cos.ap-chengdu.myqcloud.com/%20images/%20unnamed.png')">
     <div class="container" style="right: 0px;left: 0px;">
         <div class="row">
             <div class="col s12 m12 l12">
                 <div class="brand">
-                    <h1 class="description center-align post-title">Java并发21-原子类：无锁工具类的典范</h1>
+                    <h1 class="description center-align post-title">Elasticsearch选主流程</h1>
                 </div>
             </div>
         </div>
@@ -431,12 +431,8 @@
                     
                     <div class="article-tag">
                         
-                            <a href="/tags/Java/">
-                                <span class="chip bg-color">Java</span>
-                            </a>
-                        
-                            <a href="/tags/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/">
-                                <span class="chip bg-color">并发编程</span>
+                            <a href="/tags/Elasticsearch/">
+                                <span class="chip bg-color">Elasticsearch</span>
                             </a>
                         
                     </div>
@@ -447,8 +443,8 @@
                     <div class="post-cate">
                         <i class="fas fa-bookmark fa-fw icon-category"></i>
                         
-                            <a href="/categories/%E5%90%8E%E7%AB%AF/" class="post-category">
-                                后端
+                            <a href="/categories/Elasticsearch/" class="post-category">
+                                Elasticsearch
                             </a>
                         
                     </div>
@@ -460,7 +456,7 @@
                 
                 <div class="post-date info-break-policy">
                     <i class="far fa-calendar-minus fa-fw"></i>发布日期:&nbsp;&nbsp;
-                    2020-12-16
+                    2021-10-03
                 </div>
                 
 
@@ -469,14 +465,14 @@
                 
                 <div class="info-break-policy">
                     <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
-                    1.1k
+                    2.7k
                 </div>
                 
 
                 
                 <div class="info-break-policy">
                     <i class="far fa-clock fa-fw"></i>阅读时长:&nbsp;&nbsp;
-                    3 分
+                    9 分
                 </div>
                 
 
@@ -504,62 +500,92 @@
 
         <div class="card-content article-card-content">
             <div id="articleContent">
-                <h3 id="Java并发21-原子类：无锁工具类的典范"><a href="#Java并发21-原子类：无锁工具类的典范" class="headerlink" title="Java并发21-原子类：无锁工具类的典范"></a>Java并发21-原子类：无锁工具类的典范</h3><p><code>JDK</code>提供了原子类，基本上是基于<code>CAS</code>原理实现的无锁下保证线程安全。</p>
-<p><img src="https://images-1252818907.cos.ap-chengdu.myqcloud.com/images/%E5%8E%9F%E5%AD%90%E7%B1%BB%E7%BB%84%E6%88%90%E6%A6%82%E8%A7%88%E5%9B%BE.png" alt="原子类组成概览图"></p>
-<h3 id="无锁"><a href="#无锁" class="headerlink" title="无锁"></a>无锁</h3><p>无锁方案相对互斥锁方案，最大的好处就是<strong>性能</strong>。</p>
-<p>互斥锁方案为了保证互斥性，需要执行加锁、解锁操作，而加锁、解锁操作本身就消耗性能；</p>
-<p>同时拿不到锁的线程还会进入阻塞状态，进而触发线程切换，线程切换对性能的消耗也很大。 </p>
-<p>而无锁方案则完全没有加锁、解锁的性能消耗，同时还能保证互斥性，相比互斥锁方案性能大大提升。</p>
-<h3 id="CAS"><a href="#CAS" class="headerlink" title="CAS"></a>CAS</h3><p><code>CAS</code>即<code>Compare And Swap</code>，就是比较并交换。<code>CAS</code>是一种CPU指令，<strong>作为CPU指令，<code>CAS</code>本身是可以保证原子性的</strong>，所以<code>CAS</code>是通过硬件层面上的支持来保障数据更新的线程安全。</p>
-<p><strong><code>CAS</code>有3个参数，共享变量内存地址<code>A</code>（旧值），用于比较值<code>B</code>(期望值)，共享变量新值<code>C</code>(更新值)。只有当期望值<code>B</code>和旧值<code>A</code>相等时，才会将旧值更新为新值<code>C</code>。</strong></p>
-<h4 id="如何理解这句话？"><a href="#如何理解这句话？" class="headerlink" title="如何理解这句话？"></a>如何理解这句话？</h4><p>设有一值<code>v</code>=1，有多个线程同时对该值进行+1或-1操作。</p>
-<p><code>CAS</code>指令会先把旧值取出来，计算得到新值，并将旧值赋值给期望值。因为在计算新值的过程中，可能其他的线程已经将原内存地址的值修改过，所以需要通过更新值与当前内存地址的值进行比较，只有当期望值与内存地址的值相同时，才会将新值进行赋值。若期望值和内存地址的值不相同，那么说明已经有线程修改过该值了。所以当前线程的修改就失败了，这样保证了线程安全。</p>
-<h3 id="ABA问题"><a href="#ABA问题" class="headerlink" title="ABA问题"></a>ABA问题</h3><p>接上文，若期望值和内存地址值相同。是否能说明该值未被其他线程修改过？</p>
-<p>在计算新值期间，<code>v</code>可能被加1又被减1，所以导致该值最终未发生变化，但实际上它是变化过的。这就是<code>ABA</code>问题。</p>
-<h3 id="原子类源码"><a href="#原子类源码" class="headerlink" title="原子类源码"></a>原子类源码</h3><p>我们取一个原子类底层的<code>unsafe</code>类的源码来看<code>CAS</code>在<code>Java</code>中如何实现的。</p>
-<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">public</span> <span class="token keyword">final</span> <span class="token keyword">int</span> <span class="token function">getAndAddInt</span><span class="token punctuation">(</span><span class="token class-name">Object</span> <span class="token keyword">this</span><span class="token punctuation">,</span> <span class="token keyword">long</span> offset<span class="token punctuation">,</span> <span class="token keyword">int</span> delta<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
-    <span class="token keyword">int</span> oldValue<span class="token punctuation">;</span>
-    <span class="token keyword">do</span> <span class="token punctuation">&#123;</span>
-        oldValue <span class="token operator">=</span> <span class="token keyword">this</span><span class="token punctuation">.</span><span class="token function">getIntVolatile</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">,</span> offset<span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">&#125;</span> <span class="token keyword">while</span><span class="token punctuation">(</span><span class="token operator">!</span><span class="token keyword">this</span><span class="token punctuation">.</span><span class="token function">compareAndSwapInt</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">,</span> offset<span class="token punctuation">,</span> oldValue<span class="token punctuation">,</span> oldValue <span class="token operator">+</span> delta<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <h2 id="前置"><a href="#前置" class="headerlink" title="前置"></a>前置</h2><h3 id="Discovery"><a href="#Discovery" class="headerlink" title="Discovery"></a>Discovery</h3><p><code>Discovery</code>是集群组成模块寻找形成集群的其他节点的过程。</p>
+<p>当你启动一个es节点或者一个节点认为master节点挂掉时这个过程就会开始执行了，直到master节点被找到或者选举出一个新master节点。</p>
+<p>这个过程从来自一个或多个<code>seed hosts providers</code>提供的<code>seed addresses</code>开始，这些地址还包括最后一个被发现集群的<code>master-eligible</code>节点中的任何一个地址。</p>
+<p>这个过程包含两步：</p>
+<ol>
+<li>每个节点通过连接<code>seed addresses</code>中的地址来进行探测，并且尝试去认证它连接到的节点，看是探测到的节点否是一个<code>master-eligible</code>节点</li>
+<li>如果是<code>master-eligible</code>，它会探测到的这个<code>master-eligible</code>节点分享它已经发现的所有<code>master-eligible</code>节点，对方节点也会分享它自己同等的信息。然后节点根据获取到的信息，继续探测它没探测过的节点，获取它们的<code>master-eligible</code>节点列表。</li>
+</ol>
+<p>如果某个节点不是<code>master-eligible</code>节点，那么它会继续这个<code>Discovery</code>过程直到它找到master节点。如果一直没有master节点被选出来，那么这个节点会隔<code>discovery.find_peers_interval</code>时间重试，默认1s。</p>
+<h3 id="Quorum-based-decision-making"><a href="#Quorum-based-decision-making" class="headerlink" title="Quorum-based decision making"></a>Quorum-based decision making</h3><p>选举一个主节点并改变集群状态是所有<code>master-eligible</code>节点必须共同完成的两个基础的任务。即使某些节点挂掉，这些任务也需要能够正常执行。</p>
+<p>这种能够正常执行的稳健性，通过仲裁来实现，仲裁节点是<code>master-eligible</code>节点的子集。</p>
+<p>只需要节点的子集进行仲裁优势在于：某些节点可能会发生故障，但不会阻止集群继续运行。</p>
+<p>仲裁节点是经过认真选择的，因此集群不会出现“脑裂”场景。</p>
+<p><strong>随着节点的添加或删除，Elasticsearch 通过更新集群的<code>voting configuration</code>来保持一个最佳的容错水平，<code>voting configuration</code>是一组<code>master-eligible</code>节点，在做出选择新主节点或提交新集群状态等决策时，这些节点的响应会被计算在内。</strong></p>
+<p><strong>只有在<code>voting configuration</code>中超过一半的节点做出响应后，才会做出决定。</strong></p>
+<p><strong>通常<code>voting configuration</code>中配置的节点集合就是当前集群中所有<code>master-eligible</code>节点的集合。但是在某些情况下，<code>voting configuration</code>中配置的节点可能会有所不同。（具体看完下文你就懂了）</strong></p>
+<p><strong>为确保集群保持可用，不能同时停止<code>voting configuration</code>中的一半或更多节点。只要超过一半的投票节点可用，集群仍然可以正常工作。</strong></p>
+<p><strong>这意味着如果有三个或四个<code>master-eligible</code>节点，集群可以容忍其中一个不可用。如果有两个或更少的符合主节点条件的节点，它们必须全部保持可用。</strong></p>
+<p>在一个节点加入或离开集群之前，master节点必须提交一个集群状态更新来调整<code>voting configuration</code>,这个过程会花费短暂的时间。</p>
+<p>在移除更多节点前，等待这个过程完成很重要。</p>
+<h3 id="Master-elections"><a href="#Master-elections" class="headerlink" title="Master elections"></a>Master elections</h3><p>Elasticsearch uses an election process to agree on an elected master node, both at startup and if the existing elected master fails.</p>
+<p>任何<code>master-eligible</code>节点都可以开始选举，通常第一次选举会成功。</p>
+<p>选举通常只有在两个节点几乎同时开始选举时才会失败，因此Elasticsearch在每个节点上随机安排选举以降低发生这种情况的可能性。</p>
+<p>节点会一直重试选举过程，直到选举出一个主节点。最终选举成功（具有任意高的概率）。主选举的调度由<a target="_blank" rel="noopener" href="https://www.elastic.co/guide/en/elasticsearch/reference/current/modules-discovery-settings.html#master-election-settings">master election settings</a>设置控制。</p>
+<h3 id="Voting-configurations"><a href="#Voting-configurations" class="headerlink" title="Voting configurations"></a>Voting configurations</h3><p>每个Elasticsearch集群都有一个<code>voting configuration</code>，这个配置项包含的是一组<code>master-eligible</code>节点。当选举新的master节点或者更新集群状态时，</p>
+<p>这组节点的响应会被考虑进决策的计算之内。只有大多数(超过半数)节点都投票响应时，才会做出对应的决策。</p>
+<p>通常<code>voting configuration</code>的集合就是整个集群中所有的<code>master-eligible</code>节点，在一些特别的情况下回做出调整。</p>
+<p>通过下面这个API获取集群当前的<code>voting configuration</code>:</p>
+<pre class="line-numbers language-json" data-language="json"><code class="language-json">curl -X GET <span class="token string">"localhost:9200/_cluster/state?filter_path=metadata.cluster_coordination.last_committed_config&amp;pretty"</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 
-    <span class="token keyword">return</span> oldValue<span class="token punctuation">;</span>
-<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<blockquote>
+<p>有时候<code>voting configuration</code>中的配置甚至会包括一些不可用节点，可用的节点却不在里面。</p>
+</blockquote>
+<p>在选举master或者更新集群状态这种需要投票做决策的操作中，一般情况下，有资格投票的节点越多越好。所以当有新的<code>master-eligible </code>节点加入集群时，<code>Elasticsearch</code>倾向于将它加入<code>voting configuration</code>里。另一种情况是，如果集群中，一台属于<code>voting configuration</code>节点下线了，如果此时集群中有不存在于<code>voting configuration</code>的<code>master-eligible </code>节点存活，<code>Elasticsearch</code>会把那台下线的节点移出<code>voting configuration</code>,把存活的这台加进来。这样保证了<code>voting configuration</code>的弹性。</p>
+<p>只有在整个集群第一次启动时才需要初始仲裁。 加入建立群集的新节点可以安全地获取所需的所有信息。节点将在重新启动时将所需的所有信息存储到磁盘中。</p>
+<p>下面这段文章复制的，写的不错了，不需要改了。</p>
+<h3 id="Raft算法选主流程"><a href="#Raft算法选主流程" class="headerlink" title="Raft算法选主流程"></a>Raft算法选主流程</h3><p>其设计原则如下：</p>
+<ul>
+<li>容易理解</li>
+<li>减少状态的数量，尽可能消除不确定性</li>
+</ul>
+<p>在Raft中，节点可能的状态有三种，其转换关系如下：</p>
+<p><img src="https://images-1252818907.cos.ap-chengdu.myqcloud.com/%20images/%2059o7j7ca4j.png"></p>
+<p>正常情况下，集群中只有一个Leader，其他节点全是Follower。Follower 都是被动接收请求，从不主动发送任何请求。Candidate  [ˈkændɪdət; ˈkændɪdeɪt] n. 候选人，候补者；应试者  是从Follower到Leader的中间状态。</p>
+<p><strong>Raft中引入任期(term) 的概念，每个term内最多只有一个Leader。term 在Raft算法中充当逻辑时钟的作用。服务器之间通信的时候会携带这个term，如果节点发现消息中的term小于自己的term，则拒绝这个消息；如果大于本节点的term，则更新自己的term。如果一个Candidate或者Leader发现自己的任期过期了，它会立即回到Follower状态。</strong></p>
+<p>Raft选举流程为：</p>
+<ul>
+<li><strong>增加当前节点本地的current term，切换到Candidate状态；</strong></li>
+<li><strong>当前节点投自己一票，并且并行给其他节点发送RequestVote RPC (让大家投他) ；</strong></li>
+</ul>
+<p>然后等待其他节点的响应，会有如下三种结果：</p>
+<ul>
+<li><strong>如果接收到大多数服务器的选票，那么就变成Leader。成为Leader后，向其他节点发送心跳消息来确定自己的地位并阻止新的选举。</strong></li>
+<li><strong>如果收到了别人的投票请求，且别人的term比自己的大，那么候选者退化为Follower；</strong></li>
+<li><strong>如果选举过程超时，再次发起一轮选举；</strong></li>
+</ul>
+<h3 id="ES实现Raft算法选主流程"><a href="#ES实现Raft算法选主流程" class="headerlink" title="ES实现Raft算法选主流程"></a>ES实现Raft算法选主流程</h3><p><strong>ES实现中，候选人不先投自己，而是直接并行发起RequestVote，这相当于候选人有投票给其他候选人的机会。这样的好处是可以在一定程度上避免3个节点同时成为候选人时，都投自己，无法成功选主的情况。</strong></p>
+<p><strong>ES不限制每个节点在某个term上只能投一票， 节点可以投多票，这样会产生选出多个主的情况：</strong></p>
+<ul>
+<li>Node2被选为主，收到的投票为：Node2、 Node3；</li>
+<li>Node3被选为主，收到的投票为：Node3、 Node1；</li>
+</ul>
+<p>对于这种情况，ES的处理是让最后当选的Leader成功，作为Leader。如果收到RequestVote请求，他会无条件退出Leader状态。在本例中，Node2先被选为主，随后他收到Node3的RequestVote请求，那么他退出Leader状态，切换为CANDIDATE，并同意向发起RequestVote候选人投票。因此最终Node3成功当选为Leader。</p>
+<p><img src="https://images-1252818907.cos.ap-chengdu.myqcloud.com/%20images/%202acsf1tnyf.png"></p>
+<h3 id="动态维护参选节点列表"><a href="#动态维护参选节点列表" class="headerlink" title="动态维护参选节点列表"></a>动态维护参选节点列表</h3><p>在此之前，我们讨论的前提是在集群节点数量不变的情况下，现在考虑下集群扩容、缩容、节点临时或永久离线时是如何处理的。在7.x之前的版本中，用户需要手工配置<code>minimum_master_nodes</code>, 来明确告诉集群过半节点数应该是多少，并在集群扩缩容时调整他。现在，集群可以自行维护。</p>
+<p>在取消了<code>discovery.zen.minimum_master_nodes</code> 配置后，现在的做法不再记录“quorum”法定数量的具体数值，取而代之的是记录一个节点列表，这个列表中保存所有具备master资格的节点(有些情况下不是这样，例如集群原本只有1个节点，当增加到2个的时候，这个列表维持不变，因为如果变成2，当集群任意节点离线，都会导致无法选主。这时如果再增加一个节点，集群变成3个，这个列表中就会更新为3个节点)，称为<code>VotingConfiguration</code>，他会持久化到集群状态中。</p>
+<p><strong>在节点加入或离开集群之后，Elasticsearch 会自动对<code>VotingConfiguration</code> 做出相应的更改，以确保集群具有尽可能高的弹性。</strong>在从集群中删除更多节点之前，等待这个调整完成是很重要的。你不能一次性停止半数或更多的节点。(感觉大面积缩容时候这个操作就比较感人了，一部分一部分缩)。<strong>默认情况下，ES自动维护VotingConfiguration。</strong>有新节点加入的时候比较好办，但是当有节点离开的时候，他可能是暂时的重启，也可能是永久下线。你也可以人工维护VotingConfiguration，配置项为：<code>cluster.auto_shrink_voting_configuration</code>，当你选择人工维护时，有节点永久下线，需要通过<code>voting exclusions API</code>将节点排除出去。如果使用默认的自动维护<code>VotingConfiguration</code>，也可以使用<code>voting exclusions API</code>来排除节点，例如一次性下线半数以上的节点。</p>
+<p>如果在维护<code>VotingConfiguration</code>时发现节点数量为偶数，ES会将其中一个排除在外，保证<code>VotingConfiguration</code>是奇数。因为当是偶数的情况下，网络分区将集群划分为大小相等的两部分，那么两个子集群都无法达到“多数”的条件。</p>
+<p><a target="_blank" rel="noopener" href="https://www.elastic.co/guide/en/elasticsearch/reference/current/voting-config-exclusions.html">Voting configuration exclusions API</a></p>
+<pre class="line-numbers language-js" data-language="js"><code class="language-js"><span class="token constant">POST</span> <span class="token operator">/</span>_cluster<span class="token operator">/</span>voting_config_exclusions<span class="token operator">?</span>node_names<span class="token operator">=</span><span class="token operator">&lt;</span>node_names<span class="token operator">></span>
+<span class="token constant">POST</span> <span class="token operator">/</span>_cluster<span class="token operator">/</span>voting_config_exclusions<span class="token operator">?</span>node_ids<span class="token operator">=</span><span class="token operator">&lt;</span>node_ids<span class="token operator">></span>
+<span class="token constant">DELETE</span> <span class="token operator">/</span>_cluster<span class="token operator">/</span>voting_config_exclusions
 
-<p>首先，通过<code>this</code>和<code>offset</code>可以确定值的具体位置，<code>delta</code>是要增加的值。</p>
-<p>代码先定位到值的位置，取出值作为<code>oldValue</code>，然后通过<code>comapreAndSwap</code>方法进行赋值。</p>
-<p>其中参数<code>this</code>和<code>offset</code>可以定位值的内存地址，传入<code>oldValue</code>作为期望值，传入<code>oldValue+delta</code>作为新值。</p>
-<p>只有当内存地址的值和期望值相等时才会将新值赋值，并返回<code>true</code>，结束循环。否则，返回<code>false</code>并继续自旋进行赋值。 </p>
-<h3 id="原子类概览"><a href="#原子类概览" class="headerlink" title="原子类概览"></a>原子类概览</h3><h4 id="原子化的基本数据类型"><a href="#原子化的基本数据类型" class="headerlink" title="原子化的基本数据类型"></a>原子化的基本数据类型</h4><p> <code>AtomicBoolean</code>、<code>AtomicInteger</code> 和 <code>AtomicLong</code> API比较简单</p>
-<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token function">getAndIncrement</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token comment">//原子化i++</span>
-<span class="token function">getAndDecrement</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token comment">//原子化的i--</span>
-<span class="token function">incrementAndGet</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token comment">//原子化的++i</span>
-<span class="token function">decrementAndGet</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token comment">//原子化的--i</span>
-<span class="token comment">// 当前值+=delta，返回+=前的值</span>
-<span class="token function">getAndAdd</span><span class="token punctuation">(</span>delta<span class="token punctuation">)</span> 
-<span class="token comment">// 当前值+=delta，返回+=后的值</span>
-<span class="token function">addAndGet</span><span class="token punctuation">(</span>delta<span class="token punctuation">)</span>
-<span class="token comment">// CAS操作，返回是否成功</span>
-<span class="token function">compareAndSet</span><span class="token punctuation">(</span>expect<span class="token punctuation">,</span> update<span class="token punctuation">)</span>
-<span class="token comment">// 以下四个方法</span>
-<span class="token comment">// 新值可以通过传入func函数来计算</span>
-<span class="token function">getAndUpdate</span><span class="token punctuation">(</span>func<span class="token punctuation">)</span>
-<span class="token function">updateAndGet</span><span class="token punctuation">(</span>func<span class="token punctuation">)</span>
-<span class="token function">getAndAccumulate</span><span class="token punctuation">(</span>x<span class="token punctuation">,</span>func<span class="token punctuation">)</span>
-<span class="token function">accumulateAndGet</span><span class="token punctuation">(</span>x<span class="token punctuation">,</span>func<span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
-<h4 id="原子化的对象引用类型"><a href="#原子化的对象引用类型" class="headerlink" title="原子化的对象引用类型"></a>原子化的对象引用类型</h4><p><code>AtomicReference</code>、<code>AtomicStampedReference</code> 和 <code>AtomicMarkableReference</code>，可以实现对象引用的原子化更新。</p>
-<p><code>AtomicReference</code> 提供的方法和原子化的基本数据类型差不多。</p>
-<p>对象引用的更新需要重点关注 <code>ABA</code> 问题，<code>AtomicStampedReference</code> 和 <code>AtomicMarkableReference</code> 这两个原子类可以解决 <code>ABA</code> 问题。</p>
-<p>每次执行 <code>CAS</code> 操作，附加再更新一个版本号，只要保证版本号是递增的，那么即便 <code>A</code> 变成 <code>B</code> 之后再变回 <code>A</code>，版本号也不会变回来（版本号递增的）。</p>
-<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">boolean</span> <span class="token function">compareAndSet</span><span class="token punctuation">(</span>
-  <span class="token class-name">V</span> expectedReference<span class="token punctuation">,</span>
-  <span class="token class-name">V</span> newReference<span class="token punctuation">,</span>
-  <span class="token keyword">int</span> expectedStamp<span class="token punctuation">,</span>
-  <span class="token keyword">int</span> newStamp<span class="token punctuation">)</span> <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+Adds nodes named nodeName1 and nodeName2 to the voting configuration exclusions list<span class="token operator">:</span>
 
-<h4 id="原子化数组"><a href="#原子化数组" class="headerlink" title="原子化数组"></a>原子化数组</h4><p><code>AtomicIntegerArray</code>、<code>AtomicLongArray</code> 和 <code>AtomicReferenceArray</code>，这样可以原子化地更新数组里面的每一个元素。</p>
-<p>这些类提供的方法和原子化的基本数据类型的区别是：每个方法多了一个数组的索引参数。</p>
+<span class="token constant">POST</span> <span class="token operator">/</span>_cluster<span class="token operator">/</span>voting_config_exclusions<span class="token operator">?</span>node_names<span class="token operator">=</span>nodeName1<span class="token punctuation">,</span>nodeName2
+
+Remove all exclusions from the list<span class="token operator">:</span>
+
+<span class="token constant">DELETE</span> <span class="token operator">/</span>_cluster<span class="token operator">/</span>voting_config_exclusions<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h3><p><a target="_blank" rel="noopener" href="https://www.elastic.co/guide/en/elasticsearch/reference/current/modules-discovery-hosts-providers.html">Elasticsearch Guide [7.15] » Set up Elasticsearch » Discovery and cluster formation » Discovery</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.elastic.co/guide/en/elasticsearch/reference/current/modules-discovery-quorums.html">Elasticsearch Guide [7.15] » Set up Elasticsearch » Discovery and cluster formation » Quorum-based decision making</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.elastic.co/guide/en/elasticsearch/reference/current/modules-discovery-voting.html">Elasticsearch Guide [7.15] » Set up Elasticsearch » Discovery and cluster formation » Voting configurations</a></p>
+<p><a target="_blank" rel="noopener" href="https://cloud.tencent.com/developer/article/1826426">ElasticSearch 7.x之后选主流程</a></p>
 
                 
             </div>
@@ -576,7 +602,7 @@
                     </i>
                 </span>
                 <span class="reprint-info">
-                    <a href="/about" rel="external nofollow noreferrer">Wendell</a>
+                    <a href="/about" rel="external nofollow noreferrer">Wendell-Z</a>
                 </span>
             </div>
             <div class="reprint__type">
@@ -586,7 +612,7 @@
                     </i>
                 </span>
                 <span class="reprint-info">
-                    <a href="https://wendell-z.github.io/posts/2020/12/16/java-bing-fa-21-yuan-zi-lei-wu-suo-gong-ju-lei-de-dian-fan/">https://wendell-z.github.io/posts/2020/12/16/java-bing-fa-21-yuan-zi-lei-wu-suo-gong-ju-lei-de-dian-fan/</a>
+                    <a href="https://wendell-z.github.io/posts/2021/10/03/elasticsearch-xuan-zhu-liu-cheng/">https://wendell-z.github.io/posts/2021/10/03/elasticsearch-xuan-zhu-liu-cheng/</a>
                 </span>
             </div>
             <div class="reprint__notice">
@@ -599,7 +625,7 @@
                     本博客所有文章除特別声明外，均采用
                     <a href="https://creativecommons.org/licenses/by/4.0/deed.zh" rel="external nofollow noreferrer" target="_blank">CC BY 4.0</a>
                     许可协议。转载请注明来源
-                    <a href="/about" target="_blank">Wendell</a>
+                    <a href="/about" target="_blank">Wendell-Z</a>
                     !
                 </span>
             </div>
@@ -624,12 +650,8 @@
                     
                         <div class="article-tag">
                             
-                                <a href="/tags/Java/">
-                                    <span class="chip bg-color">Java</span>
-                                </a>
-                            
-                                <a href="/tags/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/">
-                                    <span class="chip bg-color">并发编程</span>
+                                <a href="/tags/Elasticsearch/">
+                                    <span class="chip bg-color">Elasticsearch</span>
                                 </a>
                             
                         </div>
@@ -1066,30 +1088,30 @@
             <div class="article-badge left-badge text-color">
                 <i class="fas fa-chevron-left"></i>&nbsp;上一篇</div>
             <div class="card">
-                <a href="/2021/02/04/idea-chang-yong-cha-jian/">
+                <a href="/2021/10/03/elasticsearch-suo-yin-liu-cheng/">
                     <div class="card-image">
                         
-                        <img src="https://images-1252818907.cos.ap-chengdu.myqcloud.com/images/image-20210204225214496.png" class="responsive-img" alt="IDEA常用插件推荐">
+                        <img src="https://images-1252818907.cos.ap-chengdu.myqcloud.com/%20images/%20unnamed.png" class="responsive-img" alt="Elasticsearch索引流程">
                         
-                        <span class="card-title">IDEA常用插件推荐</span>
+                        <span class="card-title">Elasticsearch索引流程</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
                     <div class="summary block-with-text">
                         
-                            事半功倍的效率
+                            文档在ES中存储流程变化
                         
                     </div>
                     <div class="publish-info">
                         <span class="publish-date">
-                            <i class="far fa-clock fa-fw icon-date"></i>2021-02-04
+                            <i class="far fa-clock fa-fw icon-date"></i>2021-10-03
                         </span>
                         <span class="publish-author">
                             
                             <i class="fas fa-bookmark fa-fw icon-category"></i>
                             
-                            <a href="/categories/%E8%BD%AF%E4%BB%B6%E5%B7%A5%E5%85%B7/" class="post-category">
-                                    软件工具
+                            <a href="/categories/Elasticsearch/" class="post-category">
+                                    Elasticsearch
                                 </a>
                             
                             
@@ -1099,12 +1121,8 @@
                 
                 <div class="card-action article-tags">
                     
-                    <a href="/tags/%E6%95%8F%E6%8D%B7%E5%BC%80%E5%8F%91/">
-                        <span class="chip bg-color">敏捷开发</span>
-                    </a>
-                    
-                    <a href="/tags/IDEA/">
-                        <span class="chip bg-color">IDEA</span>
+                    <a href="/tags/Elasticsearch/">
+                        <span class="chip bg-color">Elasticsearch</span>
                     </a>
                     
                 </div>
@@ -1118,30 +1136,30 @@
                 下一篇&nbsp;<i class="fas fa-chevron-right"></i>
             </div>
             <div class="card">
-                <a href="/2020/06/14/arrayblckingqueue-gou-zao-han-shu-jia-suo-wen-ti/">
+                <a href="/2021/09/23/wen-dang-de-fu-zi-guan-xi/">
                     <div class="card-image">
                         
-                        <img src="https://images-1252818907.cos.ap-chengdu.myqcloud.com/images/arrayblockingcode.png" class="responsive-img" alt="ArrayBlckingQueue构造函数加锁问题">
+                        <img src="https://images-1252818907.cos.ap-chengdu.myqcloud.com/%20images/%20unnamed.png" class="responsive-img" alt="文档的父子关系">
                         
-                        <span class="card-title">ArrayBlckingQueue构造函数加锁问题</span>
+                        <span class="card-title">文档的父子关系</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
                     <div class="summary block-with-text">
                         
-                            为什么ArrayBlockingQueue的构造函数要加锁？
+                            文档的父子关系DSL应用
                         
                     </div>
                     <div class="publish-info">
                             <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2020-06-14
+                                <i class="far fa-clock fa-fw icon-date"></i>2021-09-23
                             </span>
                         <span class="publish-author">
                             
                             <i class="fas fa-bookmark fa-fw icon-category"></i>
                             
-                            <a href="/categories/%E5%90%8E%E7%AB%AF/" class="post-category">
-                                    后端
+                            <a href="/categories/Elasticsearch/" class="post-category">
+                                    Elasticsearch
                                 </a>
                             
                             
@@ -1151,16 +1169,8 @@
                 
                 <div class="card-action article-tags">
                     
-                    <a href="/tags/Java/">
-                        <span class="chip bg-color">Java</span>
-                    </a>
-                    
-                    <a href="/tags/Queue/">
-                        <span class="chip bg-color">Queue</span>
-                    </a>
-                    
-                    <a href="/tags/%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/">
-                        <span class="chip bg-color">源码分析</span>
+                    <a href="/tags/Elasticsearch/">
+                        <span class="chip bg-color">Elasticsearch</span>
                     </a>
                     
                 </div>

@@ -4,7 +4,7 @@
 
 <head>
     <meta charset="utf-8">
-    <meta name="keywords" content="Java并发21-原子类：无锁工具类的典范, Wendell-Z">
+    <meta name="keywords" content="Elasticsearch索引流程, Wendell-Z">
     <meta name="description" content="">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
@@ -16,7 +16,7 @@
     <!-- Global site tag (gtag.js) - Google Analytics -->
 
 
-    <title>Java并发21-原子类：无锁工具类的典范 | Wendell-Z</title>
+    <title>Elasticsearch索引流程 | Wendell-Z</title>
     <link rel="icon" type="image/png" href="/favicon.png">
 
     <link rel="stylesheet" type="text/css" href="/libs/awesome/css/all.css">
@@ -310,12 +310,12 @@
 
 
 
-<div class="bg-cover pd-header post-cover" style="background-image: url('https://images-1252818907.cos.ap-chengdu.myqcloud.com/images/java并发编程.jpg')">
+<div class="bg-cover pd-header post-cover" style="background-image: url('https://images-1252818907.cos.ap-chengdu.myqcloud.com/%20images/%20unnamed.png')">
     <div class="container" style="right: 0px;left: 0px;">
         <div class="row">
             <div class="col s12 m12 l12">
                 <div class="brand">
-                    <h1 class="description center-align post-title">Java并发21-原子类：无锁工具类的典范</h1>
+                    <h1 class="description center-align post-title">Elasticsearch索引流程</h1>
                 </div>
             </div>
         </div>
@@ -431,12 +431,8 @@
                     
                     <div class="article-tag">
                         
-                            <a href="/tags/Java/">
-                                <span class="chip bg-color">Java</span>
-                            </a>
-                        
-                            <a href="/tags/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/">
-                                <span class="chip bg-color">并发编程</span>
+                            <a href="/tags/Elasticsearch/">
+                                <span class="chip bg-color">Elasticsearch</span>
                             </a>
                         
                     </div>
@@ -447,8 +443,8 @@
                     <div class="post-cate">
                         <i class="fas fa-bookmark fa-fw icon-category"></i>
                         
-                            <a href="/categories/%E5%90%8E%E7%AB%AF/" class="post-category">
-                                后端
+                            <a href="/categories/Elasticsearch/" class="post-category">
+                                Elasticsearch
                             </a>
                         
                     </div>
@@ -460,7 +456,7 @@
                 
                 <div class="post-date info-break-policy">
                     <i class="far fa-calendar-minus fa-fw"></i>发布日期:&nbsp;&nbsp;
-                    2020-12-16
+                    2021-10-03
                 </div>
                 
 
@@ -469,14 +465,14 @@
                 
                 <div class="info-break-policy">
                     <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
-                    1.1k
+                    1.2k
                 </div>
                 
 
                 
                 <div class="info-break-policy">
                     <i class="far fa-clock fa-fw"></i>阅读时长:&nbsp;&nbsp;
-                    3 分
+                    4 分
                 </div>
                 
 
@@ -504,62 +500,84 @@
 
         <div class="card-content article-card-content">
             <div id="articleContent">
-                <h3 id="Java并发21-原子类：无锁工具类的典范"><a href="#Java并发21-原子类：无锁工具类的典范" class="headerlink" title="Java并发21-原子类：无锁工具类的典范"></a>Java并发21-原子类：无锁工具类的典范</h3><p><code>JDK</code>提供了原子类，基本上是基于<code>CAS</code>原理实现的无锁下保证线程安全。</p>
-<p><img src="https://images-1252818907.cos.ap-chengdu.myqcloud.com/images/%E5%8E%9F%E5%AD%90%E7%B1%BB%E7%BB%84%E6%88%90%E6%A6%82%E8%A7%88%E5%9B%BE.png" alt="原子类组成概览图"></p>
-<h3 id="无锁"><a href="#无锁" class="headerlink" title="无锁"></a>无锁</h3><p>无锁方案相对互斥锁方案，最大的好处就是<strong>性能</strong>。</p>
-<p>互斥锁方案为了保证互斥性，需要执行加锁、解锁操作，而加锁、解锁操作本身就消耗性能；</p>
-<p>同时拿不到锁的线程还会进入阻塞状态，进而触发线程切换，线程切换对性能的消耗也很大。 </p>
-<p>而无锁方案则完全没有加锁、解锁的性能消耗，同时还能保证互斥性，相比互斥锁方案性能大大提升。</p>
-<h3 id="CAS"><a href="#CAS" class="headerlink" title="CAS"></a>CAS</h3><p><code>CAS</code>即<code>Compare And Swap</code>，就是比较并交换。<code>CAS</code>是一种CPU指令，<strong>作为CPU指令，<code>CAS</code>本身是可以保证原子性的</strong>，所以<code>CAS</code>是通过硬件层面上的支持来保障数据更新的线程安全。</p>
-<p><strong><code>CAS</code>有3个参数，共享变量内存地址<code>A</code>（旧值），用于比较值<code>B</code>(期望值)，共享变量新值<code>C</code>(更新值)。只有当期望值<code>B</code>和旧值<code>A</code>相等时，才会将旧值更新为新值<code>C</code>。</strong></p>
-<h4 id="如何理解这句话？"><a href="#如何理解这句话？" class="headerlink" title="如何理解这句话？"></a>如何理解这句话？</h4><p>设有一值<code>v</code>=1，有多个线程同时对该值进行+1或-1操作。</p>
-<p><code>CAS</code>指令会先把旧值取出来，计算得到新值，并将旧值赋值给期望值。因为在计算新值的过程中，可能其他的线程已经将原内存地址的值修改过，所以需要通过更新值与当前内存地址的值进行比较，只有当期望值与内存地址的值相同时，才会将新值进行赋值。若期望值和内存地址的值不相同，那么说明已经有线程修改过该值了。所以当前线程的修改就失败了，这样保证了线程安全。</p>
-<h3 id="ABA问题"><a href="#ABA问题" class="headerlink" title="ABA问题"></a>ABA问题</h3><p>接上文，若期望值和内存地址值相同。是否能说明该值未被其他线程修改过？</p>
-<p>在计算新值期间，<code>v</code>可能被加1又被减1，所以导致该值最终未发生变化，但实际上它是变化过的。这就是<code>ABA</code>问题。</p>
-<h3 id="原子类源码"><a href="#原子类源码" class="headerlink" title="原子类源码"></a>原子类源码</h3><p>我们取一个原子类底层的<code>unsafe</code>类的源码来看<code>CAS</code>在<code>Java</code>中如何实现的。</p>
-<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">public</span> <span class="token keyword">final</span> <span class="token keyword">int</span> <span class="token function">getAndAddInt</span><span class="token punctuation">(</span><span class="token class-name">Object</span> <span class="token keyword">this</span><span class="token punctuation">,</span> <span class="token keyword">long</span> offset<span class="token punctuation">,</span> <span class="token keyword">int</span> delta<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
-    <span class="token keyword">int</span> oldValue<span class="token punctuation">;</span>
-    <span class="token keyword">do</span> <span class="token punctuation">&#123;</span>
-        oldValue <span class="token operator">=</span> <span class="token keyword">this</span><span class="token punctuation">.</span><span class="token function">getIntVolatile</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">,</span> offset<span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">&#125;</span> <span class="token keyword">while</span><span class="token punctuation">(</span><span class="token operator">!</span><span class="token keyword">this</span><span class="token punctuation">.</span><span class="token function">compareAndSwapInt</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">,</span> offset<span class="token punctuation">,</span> oldValue<span class="token punctuation">,</span> oldValue <span class="token operator">+</span> delta<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <h3 id="Elasticsearch索引流程"><a href="#Elasticsearch索引流程" class="headerlink" title="Elasticsearch索引流程"></a>Elasticsearch索引流程</h3><h4 id="分片"><a href="#分片" class="headerlink" title="分片"></a>分片</h4><p>分片是<code>Elasticsearch</code>中最小的工作单元，本质上是一个<code>Lucene</code>的<code>Index</code>。</p>
+<p>对于一个<code>Lucene Index</code>它在ES中的基本结构是这样：</p>
+<p><img src="https://images-1252818907.cos.ap-chengdu.myqcloud.com/%20images/%20image-20211003171434016.png" alt="image-20211003171434016"></p>
+<p>一个<code>Lucene Index</code>中，单个倒排索引文件被称为<code>Segment</code>，其包含多个<code>Segment</code>，<code>Segment</code>是不可变更的。</p>
+<p>在分片中查询时，会一次查询所有的<code>Segment</code>，然后汇总数据并返回。</p>
+<p><code>Lucene</code>中有一个<code>Commit Point</code>文件，用来记录所有<code>Segment</code>的信息。另外一个是<code>.del</code>文件，该文件记录了被删除的文档的信息。</p>
+<h4 id="索引步骤"><a href="#索引步骤" class="headerlink" title="索引步骤"></a>索引步骤</h4><p>当一个文档被写入时，它会经历以下几个步骤：**<code>refresh</code> –&gt; <code>flush</code> –&gt; <code>merge</code>**。</p>
+<h5 id="refresh"><a href="#refresh" class="headerlink" title="refresh"></a>refresh</h5><p>当文档最初被写入时，会被写入一个叫**<code>Index Buffer</code>**的数据结构中，<code>Index Buffer</code>存在于<code>JVM</code>内存中。</p>
+<p>此时文档是无法被搜索到的，它只是一个<code>buffer</code>，还没有形成倒排索引。</p>
+<p>接着，ES会默认每隔1秒将<code>Index Buffer</code>清空，写入到**<code>Segment</code>**中，上面说了<code>Segment</code>就是一个倒排索引。</p>
+<p>因此，此时文档已经被索引，即可以被搜索。</p>
+<p>将<code>Index Buffer</code>写入到<code>Segment</code>的过程，就是<code>refresh</code>。</p>
+<blockquote>
+<p><code>refresh</code>的触发条件：</p>
+<ul>
+<li>通过**<code>index.refresh.interval</code>**控制<code>refresh</code>的执行时间间隔，默认是1秒。这也是为什么ES被称为近实时搜索的原因，因为数据要1秒后才能被搜到。</li>
+<li>如果<code>Index buffer</code>空间被占满，也会触发<code>refresh</code>，即使执行时间间隔没到。<code>Index buffer</code>默认空间大小时<code>JVM</code>大小的10%</li>
+</ul>
+<p>Note:</p>
+<p>可以通过API，进行手动<code>refresh</code>，使得数据能够立即被搜索到。</p>
+</blockquote>
+<h5 id="flush"><a href="#flush" class="headerlink" title="flush"></a>flush</h5><p>文档数据被写入<code>Index buffer</code>的同时，也会写入一个叫**<code>Transaction log</code>**（每个分片有一个）的文件中，这个文件存在的目的是为了保证ES数据的正确性。</p>
+<p><code>Transaction log</code>这个文件，默认每5秒落一次盘，并且是顺序写。在ES断电重启时，会从这个文件中恢复数据进行<code>recover</code>。</p>
+<p>但由于这个文件是5秒落一次盘，因此重启了还是可能丢掉5秒的数据。不过这个落盘间隔是可以配置的，最小是100ms。</p>
+<p>显然，配置的落盘时间越小，数据准确性就越高，但同样会带来更多的性能成本。</p>
+<p>默认每隔30分钟或者<code>Transaction log</code>满(默认512M)的时候，会触发<code>flush</code>。</p>
+<p>当<code>flush</code>发生时，会执行以下几个步骤：</p>
+<ul>
+<li>调用一次<code>refresh</code>，清空<code>index buffer</code>，将其写入<code>segment</code></li>
+<li>调用<code>fsync</code>，将内存中的<code>Segment</code>写入到磁盘</li>
+<li>清空<code>Transaction log</code>，将其写入磁盘</li>
+</ul>
+<h5 id="merge"><a href="#merge" class="headerlink" title="merge"></a>merge</h5><p><code>merge</code>是ES定期自动执行的</p>
+<p><code>merge</code>操作主要做的内容：</p>
+<ul>
+<li>将多个segment合并成一个</li>
+<li>将.del文件中要删除的文档进行一个真正的删除</li>
+</ul>
+<blockquote>
+<p>手动<code>merge</code>：</p>
+<p><code>POST my_index/_forcemerge</code></p>
+</blockquote>
+<h3 id="merge优化"><a href="#merge优化" class="headerlink" title="merge优化"></a>merge优化</h3><p><code>merge</code>实际上是一个比较重的操作，因此我们需要着手去优化。</p>
+<p>本质上，<code>merge</code>就是将多个<code>Segment</code>合并成一个大的<code>Segment</code>。</p>
+<p>如果<code>Segment</code>产生的太多太快，就会导致<code>merge</code>频繁发生，影响性能。</p>
+<p>因此我们有2个方向可以优化：</p>
+<p>降低分段产生的数量和频率：</p>
+<ul>
+<li>将<code>refresh interval</code>调整到分钟级别/<code>indices.memory.index_buffer_size</code>大小调大</li>
+<li>尽量避免文档的更新操作</li>
+</ul>
+<p>降低最大分段的大小，避免较大的分段继续参与merge，节省系统资源。(最终会有多个分段)</p>
+<ul>
+<li><p><code>index.merge.policy.segments_per_tier</code> 默认为10，越小需要越多的合并操作</p>
+<p>该属性指定了每层段的数量。较少的值带来较少的段。这意味着更多的合并操作，和更低的索引性能，默认值为10，其值应该不低。</p>
+</li>
+<li><p><code>index.merge.policy.max_merged_segment</code> 默认5GB 超过此大小后，就不再参与后续的合并操作</p>
+</li>
+</ul>
+<p>其他优化点：</p>
+<ul>
+<li><p>当一个<code>index</code>不再有写入操作时，建议对其进行<code>force merge</code></p>
+<p>提升查询速度，减少内存开销</p>
+<pre class="line-numbers language-json" data-language="json"><code class="language-json">POST my_index/_forcemerge?max_num_segments=<span class="token number">1</span>
+GET _cat/segments/my_index?v<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
 
-    <span class="token keyword">return</span> oldValue<span class="token punctuation">;</span>
-<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-
-<p>首先，通过<code>this</code>和<code>offset</code>可以确定值的具体位置，<code>delta</code>是要增加的值。</p>
-<p>代码先定位到值的位置，取出值作为<code>oldValue</code>，然后通过<code>comapreAndSwap</code>方法进行赋值。</p>
-<p>其中参数<code>this</code>和<code>offset</code>可以定位值的内存地址，传入<code>oldValue</code>作为期望值，传入<code>oldValue+delta</code>作为新值。</p>
-<p>只有当内存地址的值和期望值相等时才会将新值赋值，并返回<code>true</code>，结束循环。否则，返回<code>false</code>并继续自旋进行赋值。 </p>
-<h3 id="原子类概览"><a href="#原子类概览" class="headerlink" title="原子类概览"></a>原子类概览</h3><h4 id="原子化的基本数据类型"><a href="#原子化的基本数据类型" class="headerlink" title="原子化的基本数据类型"></a>原子化的基本数据类型</h4><p> <code>AtomicBoolean</code>、<code>AtomicInteger</code> 和 <code>AtomicLong</code> API比较简单</p>
-<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token function">getAndIncrement</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token comment">//原子化i++</span>
-<span class="token function">getAndDecrement</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token comment">//原子化的i--</span>
-<span class="token function">incrementAndGet</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token comment">//原子化的++i</span>
-<span class="token function">decrementAndGet</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token comment">//原子化的--i</span>
-<span class="token comment">// 当前值+=delta，返回+=前的值</span>
-<span class="token function">getAndAdd</span><span class="token punctuation">(</span>delta<span class="token punctuation">)</span> 
-<span class="token comment">// 当前值+=delta，返回+=后的值</span>
-<span class="token function">addAndGet</span><span class="token punctuation">(</span>delta<span class="token punctuation">)</span>
-<span class="token comment">// CAS操作，返回是否成功</span>
-<span class="token function">compareAndSet</span><span class="token punctuation">(</span>expect<span class="token punctuation">,</span> update<span class="token punctuation">)</span>
-<span class="token comment">// 以下四个方法</span>
-<span class="token comment">// 新值可以通过传入func函数来计算</span>
-<span class="token function">getAndUpdate</span><span class="token punctuation">(</span>func<span class="token punctuation">)</span>
-<span class="token function">updateAndGet</span><span class="token punctuation">(</span>func<span class="token punctuation">)</span>
-<span class="token function">getAndAccumulate</span><span class="token punctuation">(</span>x<span class="token punctuation">,</span>func<span class="token punctuation">)</span>
-<span class="token function">accumulateAndGet</span><span class="token punctuation">(</span>x<span class="token punctuation">,</span>func<span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-
-<h4 id="原子化的对象引用类型"><a href="#原子化的对象引用类型" class="headerlink" title="原子化的对象引用类型"></a>原子化的对象引用类型</h4><p><code>AtomicReference</code>、<code>AtomicStampedReference</code> 和 <code>AtomicMarkableReference</code>，可以实现对象引用的原子化更新。</p>
-<p><code>AtomicReference</code> 提供的方法和原子化的基本数据类型差不多。</p>
-<p>对象引用的更新需要重点关注 <code>ABA</code> 问题，<code>AtomicStampedReference</code> 和 <code>AtomicMarkableReference</code> 这两个原子类可以解决 <code>ABA</code> 问题。</p>
-<p>每次执行 <code>CAS</code> 操作，附加再更新一个版本号，只要保证版本号是递增的，那么即便 <code>A</code> 变成 <code>B</code> 之后再变回 <code>A</code>，版本号也不会变回来（版本号递增的）。</p>
-<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">boolean</span> <span class="token function">compareAndSet</span><span class="token punctuation">(</span>
-  <span class="token class-name">V</span> expectedReference<span class="token punctuation">,</span>
-  <span class="token class-name">V</span> newReference<span class="token punctuation">,</span>
-  <span class="token keyword">int</span> expectedStamp<span class="token punctuation">,</span>
-  <span class="token keyword">int</span> newStamp<span class="token punctuation">)</span> <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-
-<h4 id="原子化数组"><a href="#原子化数组" class="headerlink" title="原子化数组"></a>原子化数组</h4><p><code>AtomicIntegerArray</code>、<code>AtomicLongArray</code> 和 <code>AtomicReferenceArray</code>，这样可以原子化地更新数组里面的每一个元素。</p>
-<p>这些类提供的方法和原子化的基本数据类型的区别是：每个方法多了一个数组的索引参数。</p>
+<p>最好<code>force</code>成一个<code>Segment</code>，但是<code>force merge</code>会占用大量网络/IO/CPU</p>
+<p>如果不能在业务高峰期前<code>merge</code>完，就需要增大最终的分段数</p>
+<p>调整分片的大小/<code>index.merge.policy.max_merged_segment</code>大小</p>
+</li>
+</ul>
+<h3 id="tips"><a href="#tips" class="headerlink" title="tips"></a>tips</h3><ul>
+<li>若要优化索引速度，而不注重实时性，可降低<code>refresh</code>频率</li>
+<li>当数据从hot移动到warm，官方建议手动执行以下<code>force merge</code></li>
+<li>当节点数据量很大时，有重启节点的需要时，建议先手动<code>flush</code>，会节省很多时间</li>
+<li><code>Transaction log</code>落盘的频率影响了数据的安全性</li>
+<li><code>refresh</code>的频率影响了数据的实时性</li>
+</ul>
 
                 
             </div>
@@ -576,7 +594,7 @@
                     </i>
                 </span>
                 <span class="reprint-info">
-                    <a href="/about" rel="external nofollow noreferrer">Wendell</a>
+                    <a href="/about" rel="external nofollow noreferrer">Wendell-Z</a>
                 </span>
             </div>
             <div class="reprint__type">
@@ -586,7 +604,7 @@
                     </i>
                 </span>
                 <span class="reprint-info">
-                    <a href="https://wendell-z.github.io/posts/2020/12/16/java-bing-fa-21-yuan-zi-lei-wu-suo-gong-ju-lei-de-dian-fan/">https://wendell-z.github.io/posts/2020/12/16/java-bing-fa-21-yuan-zi-lei-wu-suo-gong-ju-lei-de-dian-fan/</a>
+                    <a href="https://wendell-z.github.io/posts/2021/10/03/elasticsearch-suo-yin-liu-cheng/">https://wendell-z.github.io/posts/2021/10/03/elasticsearch-suo-yin-liu-cheng/</a>
                 </span>
             </div>
             <div class="reprint__notice">
@@ -599,7 +617,7 @@
                     本博客所有文章除特別声明外，均采用
                     <a href="https://creativecommons.org/licenses/by/4.0/deed.zh" rel="external nofollow noreferrer" target="_blank">CC BY 4.0</a>
                     许可协议。转载请注明来源
-                    <a href="/about" target="_blank">Wendell</a>
+                    <a href="/about" target="_blank">Wendell-Z</a>
                     !
                 </span>
             </div>
@@ -624,12 +642,8 @@
                     
                         <div class="article-tag">
                             
-                                <a href="/tags/Java/">
-                                    <span class="chip bg-color">Java</span>
-                                </a>
-                            
-                                <a href="/tags/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/">
-                                    <span class="chip bg-color">并发编程</span>
+                                <a href="/tags/Elasticsearch/">
+                                    <span class="chip bg-color">Elasticsearch</span>
                                 </a>
                             
                         </div>
@@ -1062,49 +1076,47 @@
 <article id="prenext-posts" class="prev-next articles">
     <div class="row article-row">
         
-        <div class="article col s12 m6" data-aos="fade-up">
+        <div class="article col s12 m6" data-aos="fade-up" data-aos="fade-up">
             <div class="article-badge left-badge text-color">
-                <i class="fas fa-chevron-left"></i>&nbsp;上一篇</div>
+                <i class="far fa-dot-circle"></i>&nbsp;本篇
+            </div>
             <div class="card">
-                <a href="/2021/02/04/idea-chang-yong-cha-jian/">
+                <a href="/2021/10/03/elasticsearch-suo-yin-liu-cheng/">
                     <div class="card-image">
                         
-                        <img src="https://images-1252818907.cos.ap-chengdu.myqcloud.com/images/image-20210204225214496.png" class="responsive-img" alt="IDEA常用插件推荐">
+                        <img src="https://images-1252818907.cos.ap-chengdu.myqcloud.com/%20images/%20unnamed.png" class="responsive-img" alt="Elasticsearch索引流程">
                         
-                        <span class="card-title">IDEA常用插件推荐</span>
+                        <span class="card-title">Elasticsearch索引流程</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
                     <div class="summary block-with-text">
                         
-                            事半功倍的效率
+                            文档在ES中存储流程变化
                         
                     </div>
                     <div class="publish-info">
-                        <span class="publish-date">
-                            <i class="far fa-clock fa-fw icon-date"></i>2021-02-04
-                        </span>
+                            <span class="publish-date">
+                                <i class="far fa-clock fa-fw icon-date"></i>2021-10-03
+                            </span>
                         <span class="publish-author">
                             
                             <i class="fas fa-bookmark fa-fw icon-category"></i>
                             
-                            <a href="/categories/%E8%BD%AF%E4%BB%B6%E5%B7%A5%E5%85%B7/" class="post-category">
-                                    软件工具
+                            <a href="/categories/Elasticsearch/" class="post-category">
+                                    Elasticsearch
                                 </a>
                             
                             
                         </span>
                     </div>
                 </div>
+
                 
                 <div class="card-action article-tags">
                     
-                    <a href="/tags/%E6%95%8F%E6%8D%B7%E5%BC%80%E5%8F%91/">
-                        <span class="chip bg-color">敏捷开发</span>
-                    </a>
-                    
-                    <a href="/tags/IDEA/">
-                        <span class="chip bg-color">IDEA</span>
+                    <a href="/tags/Elasticsearch/">
+                        <span class="chip bg-color">Elasticsearch</span>
                     </a>
                     
                 </div>
@@ -1118,30 +1130,30 @@
                 下一篇&nbsp;<i class="fas fa-chevron-right"></i>
             </div>
             <div class="card">
-                <a href="/2020/06/14/arrayblckingqueue-gou-zao-han-shu-jia-suo-wen-ti/">
+                <a href="/2021/10/03/elasticsearch-xuan-zhu-liu-cheng/">
                     <div class="card-image">
                         
-                        <img src="https://images-1252818907.cos.ap-chengdu.myqcloud.com/images/arrayblockingcode.png" class="responsive-img" alt="ArrayBlckingQueue构造函数加锁问题">
+                        <img src="https://images-1252818907.cos.ap-chengdu.myqcloud.com/%20images/%20unnamed.png" class="responsive-img" alt="Elasticsearch选主流程">
                         
-                        <span class="card-title">ArrayBlckingQueue构造函数加锁问题</span>
+                        <span class="card-title">Elasticsearch选主流程</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
                     <div class="summary block-with-text">
                         
-                            为什么ArrayBlockingQueue的构造函数要加锁？
+                            Elasticsearch选主流程
                         
                     </div>
                     <div class="publish-info">
                             <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2020-06-14
+                                <i class="far fa-clock fa-fw icon-date"></i>2021-10-03
                             </span>
                         <span class="publish-author">
                             
                             <i class="fas fa-bookmark fa-fw icon-category"></i>
                             
-                            <a href="/categories/%E5%90%8E%E7%AB%AF/" class="post-category">
-                                    后端
+                            <a href="/categories/Elasticsearch/" class="post-category">
+                                    Elasticsearch
                                 </a>
                             
                             
@@ -1151,16 +1163,8 @@
                 
                 <div class="card-action article-tags">
                     
-                    <a href="/tags/Java/">
-                        <span class="chip bg-color">Java</span>
-                    </a>
-                    
-                    <a href="/tags/Queue/">
-                        <span class="chip bg-color">Queue</span>
-                    </a>
-                    
-                    <a href="/tags/%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/">
-                        <span class="chip bg-color">源码分析</span>
+                    <a href="/tags/Elasticsearch/">
+                        <span class="chip bg-color">Elasticsearch</span>
                     </a>
                     
                 </div>
