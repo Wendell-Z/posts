@@ -506,10 +506,10 @@
 <p>一个<code>Lucene Index</code>中，单个倒排索引文件被称为<code>Segment</code>，其包含多个<code>Segment</code>，<code>Segment</code>是不可变更的。</p>
 <p>在分片中查询时，会一次查询所有的<code>Segment</code>，然后汇总数据并返回。</p>
 <p><code>Lucene</code>中有一个<code>Commit Point</code>文件，用来记录所有<code>Segment</code>的信息。另外一个是<code>.del</code>文件，该文件记录了被删除的文档的信息。</p>
-<h4 id="索引步骤"><a href="#索引步骤" class="headerlink" title="索引步骤"></a>索引步骤</h4><p>当一个文档被写入时，它会经历以下几个步骤：**<code>refresh</code> –&gt; <code>flush</code> –&gt; <code>merge</code>**。</p>
-<h5 id="refresh"><a href="#refresh" class="headerlink" title="refresh"></a>refresh</h5><p>当文档最初被写入时，会被写入一个叫**<code>Index Buffer</code>**的数据结构中，<code>Index Buffer</code>存在于<code>JVM</code>内存中。</p>
+<h4 id="索引步骤"><a href="#索引步骤" class="headerlink" title="索引步骤"></a>索引步骤</h4><p>当一个文档被写入时，它会经历以下几个步骤：<code>refresh</code> –&gt; <code>flush</code> –&gt; <code>merge</code>。</p>
+<h5 id="refresh"><a href="#refresh" class="headerlink" title="refresh"></a>refresh</h5><p>当文档最初被写入时，会被写入一个叫<code>Index Buffer</code>的数据结构中，<code>Index Buffer</code>存在于<code>JVM</code>内存中。</p>
 <p>此时文档是无法被搜索到的，它只是一个<code>buffer</code>，还没有形成倒排索引。</p>
-<p>接着，ES会默认每隔1秒将<code>Index Buffer</code>清空，写入到**<code>Segment</code>**中，上面说了<code>Segment</code>就是一个倒排索引。</p>
+<p>接着，ES会默认每隔1秒将<code>Index Buffer</code>清空，写入到<code>Segment</code>中，上面说了<code>Segment</code>就是一个倒排索引。</p>
 <p>因此，此时文档已经被索引，即可以被搜索。</p>
 <p>将<code>Index Buffer</code>写入到<code>Segment</code>的过程，就是<code>refresh</code>。</p>
 <blockquote>
@@ -521,7 +521,7 @@
 <p>Note:</p>
 <p>可以通过API，进行手动<code>refresh</code>，使得数据能够立即被搜索到。</p>
 </blockquote>
-<h5 id="flush"><a href="#flush" class="headerlink" title="flush"></a>flush</h5><p>文档数据被写入<code>Index buffer</code>的同时，也会写入一个叫**<code>Transaction log</code>**（每个分片有一个）的文件中，这个文件存在的目的是为了保证ES数据的正确性。</p>
+<h5 id="flush"><a href="#flush" class="headerlink" title="flush"></a>flush</h5><p>文档数据被写入<code>Index buffer</code>的同时，也会写入一个叫<code>Transaction log</code>（每个分片有一个）的文件中，这个文件存在的目的是为了保证ES数据的正确性。</p>
 <p><code>Transaction log</code>这个文件，默认每5秒落一次盘，并且是顺序写。在ES断电重启时，会从这个文件中恢复数据进行<code>recover</code>。</p>
 <p>但由于这个文件是5秒落一次盘，因此重启了还是可能丢掉5秒的数据。不过这个落盘间隔是可以配置的，最小是100ms。</p>
 <p>显然，配置的落盘时间越小，数据准确性就越高，但同样会带来更多的性能成本。</p>
@@ -563,9 +563,7 @@
 <ul>
 <li><p>当一个<code>index</code>不再有写入操作时，建议对其进行<code>force merge</code></p>
 <p>提升查询速度，减少内存开销</p>
-<pre class="line-numbers language-json" data-language="json"><code class="language-json">POST my_index/_forcemerge?max_num_segments=<span class="token number">1</span>
-GET _cat/segments/my_index?v<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
-
+<p><code>POST my_index/_forcemerge?max_num_segments=1</code><br><code>GET _cat/segments/my_index?v</code></p>
 <p>最好<code>force</code>成一个<code>Segment</code>，但是<code>force merge</code>会占用大量网络/IO/CPU</p>
 <p>如果不能在业务高峰期前<code>merge</code>完，就需要增大最终的分段数</p>
 <p>调整分片的大小/<code>index.merge.policy.max_merged_segment</code>大小</p>

@@ -528,8 +528,7 @@
 <p>这组节点的响应会被考虑进决策的计算之内。只有大多数(超过半数)节点都投票响应时，才会做出对应的决策。</p>
 <p>通常<code>voting configuration</code>的集合就是整个集群中所有的<code>master-eligible</code>节点，在一些特别的情况下回做出调整。</p>
 <p>通过下面这个API获取集群当前的<code>voting configuration</code>:</p>
-<pre class="line-numbers language-json" data-language="json"><code class="language-json">curl -X GET <span class="token string">"localhost:9200/_cluster/state?filter_path=metadata.cluster_coordination.last_committed_config&amp;pretty"</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-
+<p><code>curl -X GET &quot;localhost:9200/_cluster/state?filter_path=metadata.cluster_coordination.last_committed_config&amp;pretty&quot;</code></p>
 <blockquote>
 <p>有时候<code>voting configuration</code>中的配置甚至会包括一些不可用节点，可用的节点却不在里面。</p>
 </blockquote>
