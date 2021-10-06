@@ -469,14 +469,14 @@
                 
                 <div class="info-break-policy">
                     <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
-                    4.7k
+                    4.2k
                 </div>
                 
 
                 
                 <div class="info-break-policy">
                     <i class="far fa-clock fa-fw"></i>阅读时长:&nbsp;&nbsp;
-                    19 分
+                    17 分
                 </div>
                 
 
@@ -508,158 +508,89 @@
 <p>则解决可见性、有序性最直接的办法就是<strong>禁用缓存和编译优化</strong>，但会出现性能问题。所以<strong>应该按需禁用缓存以及编译优化</strong>。</p>
 <p>Java 内存模型是个很复杂的规范，可以从不同视角来解读，站在我们这些程序员的视角，本质上可以理解为，<strong>Java 内存模型规范了 JVM 如何提供按需禁用缓存和编译优化的方法</strong>。</p>
 <p>具体来说，这些方法包括 <code>volatile</code>、<code>synchronized </code>和 <code>final </code>三个关键字，以及<strong>六项 Happens-Before 规则</strong>。</p>
-<pre class="line-numbers language-volatile```：JDK1.5对该关键字做了增强，在原有禁止指令重排序&禁用缓存的功能上，通过**读写屏障**保证了**传递性**。" data-language="volatile```：JDK1.5对该关键字做了增强，在原有禁止指令重排序&禁用缓存的功能上，通过**读写屏障**保证了**传递性**。"><code class="language-volatile```：JDK1.5对该关键字做了增强，在原有禁止指令重排序&禁用缓存的功能上，通过**读写屏障**保证了**传递性**。">
-**Happens-Before 约束了编译器的优化行为，虽允许编译器优化，但是要求编译器优化后一定遵守 Happens-Before 规则。**
-
-### 1. 程序的顺序性规则
-
-在一个线程中，按照**程序控制流顺序**(而非代码顺序)，前面的操作 Happens-Before 于后续的任意操作。
-
-### 2. volatile 变量规则
-
-指对一个 volatile 变量的写操作， Happens-Before 于后续对这个 volatile 变量的读操作。
-
-### 3. 传递性
-
-这条规则是指如果 A Happens-Before B，且 B Happens-Before C，那么 A Happens-Before C。
-
-### 4. 管程中锁的规则
-
-指对一个锁的解锁 Happens-Before 于后续对这个锁的加锁。
-
-**管程**是一种通用的同步原语，在 Java 中指的就是 &#96;&#96;&#96;synchronized&#96;&#96;&#96;，&#96;&#96;&#96;synchronized&#96;&#96;&#96; 是 Java 里对管程的实现。
-
-### 5. 线程 start() 规则
-
-指主线程 A 启动子线程 B 后，子线程 B 能够看到主线程在启动子线程 B 前的操作。
-
-主线程调用B.start()之前，启动B线程之前所有对共享变量的修改，B线程皆可见。
-
-### 6. 线程 join() 规则
-
-主线程 A 等待子线程 B 完成（主线程 A 通过调用子线程 B 的&#96;&#96;&#96; join()&#96;&#96;&#96; 方法实现），当子线程 B 完成后（主线程 A 中&#96;&#96;&#96; join() &#96;&#96;&#96;方法返回），主线程能够看到子线程的操作，即对共享变量的操作。
-
-### 7.线程中断规则：
-
-对线程interrupt()方法的调用先行发生于被中断线程的代码检测到中断事件的发生，可以通过&#96;&#96;&#96;Thread.interrupted()&#96;&#96;&#96;方法检测到是否有中断发生。
-
-### 8.对象终结规则
-
-一个对象的初始化完成(构造函数执行结束)先行发生于它的&#96;&#96;&#96;finalize()&#96;&#96;&#96;方法的开始。
-
-**Note：代码执行时在时间上的先后顺序与&#96;Happends-Before&#96;原则基本没有因果关系。**
-
----------------------------------------
-
-### 补充-内存模型
-
-Java内存模型规定所有变量存到主内存，可类比就是机器上的内存，当然仍处于虚拟机内存的一部分。
-
-每条线程有自己的工作内存，可类比就是处理器缓存，里面会有对被该线程使用的主内存变量的副本。
-
-线程先把要用的数据从主内存中读取到自己的工作内存中，再操作，操作完再写会主内存。
-
-### 补充-volatile关键字
-
-2个性质：
-
-可见性：一个线程对volatile变量的修改，其他线程可以立即看见。
-
-**每次**（指令级别）操作volatile变量，强制从主内存中读； 每次写volatile变量，强制向主内存中写。
-
-禁止指令重排序：通过底层汇编代码&#96;lock add1 $0x0,(%esp)&#96;实现内存屏障，这样对volatile变量操作的指令的后面的指令就不会排到前面。
-
-### 补充-final关键字
-
-**final 修饰变量时，初衷是告诉编译器：这个变量生而不变，可以最大限度优化。**
-
-Java 编译器在 1.5 以前的版本的对该关键字有优化问题：类似利用双重检查方法创建单例，构造函数的错误重排导致线程可能看到 final 变量的值会变化。
-
-在 1.5 以后 Java 内存模型对**&#96;&#96;&#96;final&#96;&#96;&#96;类型变量的重排进行了约束**。**前提是保证提供正确构造函数没有“引用逃逸”。**
-
-**如何正确使用&#96;&#96;&#96;final&#96;&#96;&#96;保证没有引用逃逸？**
-
-
-
-&gt;**How can final fields appear to change their values?**
-&gt;
-&gt;One of the best examples of how final fields&#39; values can be seen to change involves one particular implementation of the &#96;String&#96; class.
-&gt;
-&gt;A &#96;String&#96; can be implemented as an object with three fields -- a character array, an offset into that array, and a length. The rationale for implementing &#96;String&#96; this way, instead of having only the character array, is that it lets multiple &#96;String&#96; and &#96;StringBuffer&#96; objects share the same character array and avoid additional object allocation and copying. So, for example, the method &#96;String.substring()&#96; can be implemented by creating a new string which shares the same character array with the original &#96;String&#96; and merely differs in the length and offset fields. For a &#96;String&#96;, these fields are all final fields.
-&gt;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p><code>volatile</code>：JDK1.5对该关键字做了增强，在原有禁止指令重排序&amp;禁用缓存的功能上，通过<strong>读写屏障</strong>保证了<strong>传递性</strong>。</p>
+<p><strong>Happens-Before 约束了编译器的优化行为，虽允许编译器优化，但是要求编译器优化后一定遵守 Happens-Before 规则。</strong></p>
+<h3 id="1-程序的顺序性规则"><a href="#1-程序的顺序性规则" class="headerlink" title="1. 程序的顺序性规则"></a>1. 程序的顺序性规则</h3><p>在一个线程中，按照<strong>程序控制流顺序</strong>(而非代码顺序)，前面的操作 Happens-Before 于后续的任意操作。</p>
+<h3 id="2-volatile-变量规则"><a href="#2-volatile-变量规则" class="headerlink" title="2. volatile 变量规则"></a>2. volatile 变量规则</h3><p>指对一个 volatile 变量的写操作， Happens-Before 于后续对这个 volatile 变量的读操作。</p>
+<h3 id="3-传递性"><a href="#3-传递性" class="headerlink" title="3. 传递性"></a>3. 传递性</h3><p>这条规则是指如果 A Happens-Before B，且 B Happens-Before C，那么 A Happens-Before C。</p>
+<h3 id="4-管程中锁的规则"><a href="#4-管程中锁的规则" class="headerlink" title="4. 管程中锁的规则"></a>4. 管程中锁的规则</h3><p>指对一个锁的解锁 Happens-Before 于后续对这个锁的加锁。</p>
+<p><strong>管程</strong>是一种通用的同步原语，在 Java 中指的就是 <code>synchronized</code>，<code>synchronized</code> 是 Java 里对管程的实现。</p>
+<h3 id="5-线程-start-规则"><a href="#5-线程-start-规则" class="headerlink" title="5. 线程 start() 规则"></a>5. 线程 start() 规则</h3><p>指主线程 A 启动子线程 B 后，子线程 B 能够看到主线程在启动子线程 B 前的操作。</p>
+<p>主线程调用B.start()之前，启动B线程之前所有对共享变量的修改，B线程皆可见。</p>
+<h3 id="6-线程-join-规则"><a href="#6-线程-join-规则" class="headerlink" title="6. 线程 join() 规则"></a>6. 线程 join() 规则</h3><p>主线程 A 等待子线程 B 完成（主线程 A 通过调用子线程 B 的<code> join()</code> 方法实现），当子线程 B 完成后（主线程 A 中<code>join()</code>方法返回），主线程能够看到子线程的操作，即对共享变量的操作。</p>
+<h3 id="7-线程中断规则："><a href="#7-线程中断规则：" class="headerlink" title="7.线程中断规则："></a>7.线程中断规则：</h3><p>对线程<code>interrupt()</code>方法的调用先行发生于被中断线程的代码检测到中断事件的发生，可以通过<code>Thread.interrupted()</code>方法检测到是否有中断发生。</p>
+<h3 id="8-对象终结规则"><a href="#8-对象终结规则" class="headerlink" title="8.对象终结规则"></a>8.对象终结规则</h3><p>一个对象的初始化完成(构造函数执行结束)先行发生于它的<code>finalize()</code>方法的开始。</p>
+<p><strong>Note：代码执行时在时间上的先后顺序与<code>Happends-Before</code>原则基本没有因果关系。</strong></p>
+<hr>
+<h3 id="补充-内存模型"><a href="#补充-内存模型" class="headerlink" title="补充-内存模型"></a>补充-内存模型</h3><p>Java内存模型规定所有变量存到主内存，可类比就是机器上的内存，当然仍处于虚拟机内存的一部分。</p>
+<p>每条线程有自己的工作内存，可类比就是处理器缓存，里面会有对被该线程使用的主内存变量的副本。</p>
+<p>线程先把要用的数据从主内存中读取到自己的工作内存中，再操作，操作完再写会主内存。</p>
+<h3 id="补充-volatile关键字"><a href="#补充-volatile关键字" class="headerlink" title="补充-volatile关键字"></a>补充-volatile关键字</h3><p>2个性质：</p>
+<p>可见性：一个线程对volatile变量的修改，其他线程可以立即看见。</p>
+<p><strong>每次</strong>（指令级别）操作volatile变量，强制从主内存中读； 每次写volatile变量，强制向主内存中写。</p>
+<p>禁止指令重排序：通过底层汇编代码<code>lock add1 $0x0,(%esp)</code>实现内存屏障，这样对volatile变量操作的指令的后面的指令就不会排到前面。</p>
+<h3 id="补充-final关键字"><a href="#补充-final关键字" class="headerlink" title="补充-final关键字"></a>补充-final关键字</h3><p><strong>final 修饰变量时，初衷是告诉编译器：这个变量生而不变，可以最大限度优化。</strong></p>
+<p>Java 编译器在 1.5 以前的版本的对该关键字有优化问题：类似利用双重检查方法创建单例，构造函数的错误重排导致线程可能看到 final 变量的值会变化。</p>
+<p><strong>在 1.5 以后 Java 内存模型对<code>final</code>类型变量的重排进行了约束。前提是保证提供正确的构造函数没有“引用逃逸”。</strong></p>
+<p><strong>如何正确使用<code>final</code>保证没有引用逃逸？</strong></p>
 <blockquote>
-<p>String s1 = “/usr/tmp”;<br>String s2 = s1.substring(4); //该处底层代码调用 new String(array, offset, length)</p>
-<pre class="line-numbers language-none"><code class="language-none">
-&gt;The string &#96;s2&#96; will have an offset of 4 and a length of 4. But, under the old model, it was possible for another thread to see the offset as having the default value of 0, and then later see the correct value of 4, it will appear as if the string &quot;&#x2F;usr&quot; changes to &quot;&#x2F;tmp&quot;.
+<p><strong>How can final fields appear to change their values?</strong></p>
+<p>One of the best examples of how final fields’ values can be seen to change involves one particular implementation of the <code>String</code> class.</p>
+<p>A <code>String</code> can be implemented as an object with three fields – a character array, an offset into that array, and a length. The rationale for implementing <code>String</code> this way, instead of having only the character array, is that it lets multiple <code>String</code> and <code>StringBuffer</code> objects share the same character array and avoid additional object allocation and copying. So, for example, the method <code>String.substring()</code> can be implemented by creating a new string which shares the same character array with the original <code>String</code> and merely differs in the length and offset fields. For a <code>String</code>, these fields are all final fields.</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token operator">></span><span class="token class-name">String</span> s1 <span class="token operator">=</span> <span class="token string">"/usr/tmp"</span><span class="token punctuation">;</span>
+<span class="token operator">></span><span class="token class-name">String</span> s2 <span class="token operator">=</span> s1<span class="token punctuation">.</span><span class="token function">substring</span><span class="token punctuation">(</span><span class="token number">4</span><span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment">//该处底层代码调用 new String(array, offset, length)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
 
-&gt;The original Java Memory Model allowed this behavior; several JVMs have exhibited this behavior. The new Java Memory Model makes this illegal.
+<p>The string <code>s2</code> will have an offset of 4 and a length of 4. But, under the old model, it was possible for another thread to see the offset as having the default value of 0, and then later see the correct value of 4, it will appear as if the string “/usr” changes to “/tmp”.</p>
+<p>The original Java Memory Model allowed this behavior; several JVMs have exhibited this behavior. The new Java Memory Model makes this illegal.</p>
+</blockquote>
+<p>上面这段话解释了为什么可能出现线程访问final值时不同的情况。</p>
+<p>举了一个很典型的例子：(需要重新组织下语言)</p>
+<p>首先<code>String</code>类是由3字段实现的：一个字符数组(<code>array</code>)，数组偏移量(<code>offset</code>)，数组长度(<code>length</code>)。</p>
+<p>为什么<code>String</code>类不直接只用一个字符数组实现就行了？反而要用这3个字段？</p>
+<p>原因是让<code>String</code>类的<code>StringBuffer</code>类能复用同一个字符串底层的数组，这样就不用重复复制开辟内存空间了。</p>
+<p>比如<code>String s  = &quot;abc&quot;</code>，底层是有<code>a</code>，<code>b</code>，<code>c</code>3个字符的数组，那么实际上<code>&quot;a&quot;</code>，<code>&quot;b&quot;</code>，<code>&quot;c&quot;</code>，<code>&quot;ab&quot;</code>,<code>&quot;ac&quot;</code>，<code>&quot;bc&quot;</code>这些字符串都可以复用<code>&quot;abc&quot;</code>的数组，只要这几个字符串的<code>offset</code>和<code>length</code>做出相应的变化就可以。</p>
+<p>因此，一个<code>String</code>对象中的<code>offset</code>和<code>length</code>字段也肯定是<code>final</code>的。</p>
+<p>从上面第2行代码可以看到，字符串<code>s2</code>是个<code>offset</code>为4，<code>length</code>为4的字符串，它和字符串<code>s1</code>底层都指向的同一个字符数组。</p>
+<p>在旧的内存模型中，其他线程访问<code>s2</code>时，可能会发现<code>offset</code>为0，之后<code>offset</code>才显示正确值4。</p>
+<p>这样就会让访问<code>s2</code>的线程发现，<code>s2</code>可能出现<code>s2=&quot;/usr&quot;</code>的情况（<code>offset=0</code>，<code>length=4</code>），等到<code>offset</code>成为4的时候，<code>s2</code>才为<code>&quot;/tmp&quot;</code>；</p>
+<p><strong>这种情况的产生，就是指令重排优化导致先返回了<code>s2</code>的指针，再去给<code>offset</code>初始化造成的。</strong></p>
+<p><strong>新的Java内存模型已经禁止了这种重排行为。</strong>（JDK1.5之后）</p>
+<blockquote>
+<p><strong>How do final fields work under the new JMM?</strong><br>The values for an object’s final fields are set in its constructor. Assuming the object is constructed “correctly”, once an object is constructed, the values assigned to the final fields in the constructor will be visible to all other threads without synchronization. In addition, the visible values for any other object or array referenced by those final fields will be at least as up-to-date as the final fields.</p>
+<p>What does it mean for an object to be properly constructed? It simply means that no reference to the object being constructed is allowed to “escape” during construction. (See Safe Construction Techniques for examples.)  In other words, do not place a reference to the object being constructed anywhere where another thread might be able to see it; do not assign it to a static field, do not register it as a listener with any other object, and so on. These tasks should be done after the constructor completes, not in the constructor.</p>
+</blockquote>
+<p><code>final</code>字段的值在构造器中设置。假设对象被正确构造，一旦对象构造完成，那么其他线程不用同步就可以看得到<code>final</code>字段的值。另外，被这些<code>final</code>字段引用的对象或者数组的可见值肯定至少是跟<code>final</code>字段一样新。</p>
+<p>那么怎样才能说一个构造器是被合理适当地构造了？</p>
+<p>简单说就是在对象构造过程中，对该对象的引用都不允许<strong>“引用逃逸”</strong>(escape)。（详见<a target="_blank" rel="noopener" href="http://www-106.ibm.com/developerworks/java/library/j-jtp0618.html"> Safe Construction Techniques for examples</a>）</p>
+<p><strong>也就是说不要将正在构造的对象的引用放在另一个线程可能能够看到它的任何地方；不要将其分配给静态字段，不要在将这个引用注册为<code>listener</code>等等。这种操作应该放在构造器完成之后，而不是构造器里面。</strong></p>
+<blockquote>
+<p>以下是正确的使用方式：</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token operator">></span><span class="token keyword">class</span> <span class="token class-name">FinalFieldExample</span> <span class="token punctuation">&#123;</span>
+<span class="token operator">></span><span class="token keyword">final</span> <span class="token keyword">int</span> x<span class="token punctuation">;</span>
+<span class="token operator">></span><span class="token keyword">int</span> y<span class="token punctuation">;</span>
+<span class="token operator">></span><span class="token keyword">static</span> <span class="token class-name">FinalFieldExample</span> f<span class="token punctuation">;</span>
+<span class="token operator">></span><span class="token keyword">public</span> <span class="token class-name">FinalFieldExample</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+<span class="token operator">></span>x <span class="token operator">=</span> <span class="token number">3</span><span class="token punctuation">;</span>
+<span class="token operator">></span>y <span class="token operator">=</span> <span class="token number">4</span><span class="token punctuation">;</span>
+<span class="token operator">></span><span class="token punctuation">&#125;</span>
 
-上面这段话解释了为什么可能出现线程访问final值时不同的情况。
+<span class="token operator">></span><span class="token keyword">static</span> <span class="token keyword">void</span> <span class="token function">writer</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+<span class="token operator">></span>f <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">FinalFieldExample</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token operator">></span><span class="token punctuation">&#125;</span>
 
-举了一个很典型的例子：(需要重新组织下语言)
-
-首先&#96;&#96;&#96;String&#96;&#96;&#96;类是由3字段实现的：一个字符数组(&#96;&#96;&#96;array&#96;&#96;&#96;)，数组偏移量(&#96;&#96;&#96;offset&#96;&#96;&#96;)，数组长度(&#96;&#96;&#96;length&#96;&#96;&#96;)。
-
-为什么&#96;&#96;&#96;String&#96;&#96;&#96;类不直接只用一个字符数组实现就行了？反而要用这3个字段？
-
-原因是让&#96;&#96;&#96;String&#96;&#96;&#96;类的&#96;&#96;&#96;StringBuffer&#96;&#96;&#96;类能复用同一个字符串底层的数组，这样就不用重复复制开辟内存空间了。
-
-比如&#96;&#96;&#96;String s  &#x3D; &quot;abc&quot;&#96;&#96;&#96;，底层是有&#96;&#96;&#96;a&#96;&#96;&#96;，&#96;&#96;&#96;b&#96;&#96;&#96;，&#96;&#96;&#96;c&#96;&#96;&#96;3个字符的数组，那么实际上&#96;&#96;&#96;&quot;a&quot;&#96;&#96;&#96;，&#96;&#96;&#96;&quot;b&quot;&#96;&#96;&#96;，&#96;&#96;&#96;&quot;c&quot;&#96;&#96;&#96;，&#96;&#96;&#96;&quot;ab&quot;&#96;&#96;&#96;,&#96;&#96;&#96;&quot;ac&quot;&#96;&#96;&#96;，&#96;&#96;&#96;&quot;bc&quot;&#96;&#96;&#96;这些字符串都可以复用&#96;&#96;&#96;&quot;abc&quot;&#96;&#96;&#96;的数组，只要这几个字符串的&#96;&#96;&#96;offset&#96;&#96;&#96;和&#96;&#96;&#96;length&#96;&#96;&#96;做出相应的变化就可以。
-
-因此，一个&#96;&#96;&#96;String&#96;&#96;&#96;对象中的&#96;&#96;&#96;offset&#96;&#96;&#96;和&#96;&#96;&#96;length&#96;&#96;&#96;字段也肯定是&#96;&#96;&#96;final&#96;&#96;&#96;的。
-
-从上面第2行代码可以看到，字符串&#96;&#96;&#96;s2&#96;&#96;&#96;是个&#96;&#96;&#96;offset&#96;&#96;&#96;为4，&#96;&#96;&#96;length&#96;&#96;&#96;为4的字符串，它和字符串&#96;&#96;&#96;s1&#96;&#96;&#96;底层都指向的同一个字符数组。
-
-在旧的内存模型中，其他线程访问&#96;&#96;&#96;s2&#96;&#96;&#96;时，可能会发现&#96;&#96;&#96;offset&#96;&#96;&#96;为0，之后&#96;&#96;&#96;offset&#96;&#96;&#96;才显示正确值4。
-
-这样就会让访问&#96;&#96;&#96;s2&#96;&#96;&#96;的线程发现，&#96;&#96;&#96;s2&#96;&#96;&#96;可能出现&#96;&#96;&#96;s2&#x3D;&quot;&#x2F;usr&quot;&#96;&#96;&#96;的情况（&#96;&#96;&#96;offset&#x3D;0&#96;&#96;&#96;，&#96;&#96;&#96;length&#x3D;4&#96;&#96;&#96;），等到&#96;&#96;&#96;offset&#96;&#96;&#96;成为4的时候，&#96;&#96;&#96;s2&#96;&#96;&#96;才为&#96;&#96;&#96;&quot;&#x2F;tmp&quot;&#96;&#96;&#96;；
-
-**这种情况的产生，就是指令重排优化导致先返回了&#96;&#96;&#96;s2&#96;&#96;&#96;的指针，再去给&#96;&#96;&#96;offset&#96;&#96;&#96;初始化造成的。**
-
-**新的Java内存模型已经禁止了这种重排行为。**（JDK1.5之后）
-
-&gt;**How do final fields work under the new JMM?**
-&gt;The values for an object&#39;s final fields are set in its constructor. Assuming the object is constructed &quot;correctly&quot;, once an object is constructed, the values assigned to the final fields in the constructor will be visible to all other threads without synchronization. In addition, the visible values for any other object or array referenced by those final fields will be at least as up-to-date as the final fields.
-
-&gt;What does it mean for an object to be properly constructed? It simply means that no reference to the object being constructed is allowed to &quot;escape&quot; during construction. (See Safe Construction Techniques for examples.)  In other words, do not place a reference to the object being constructed anywhere where another thread might be able to see it; do not assign it to a static field, do not register it as a listener with any other object, and so on. These tasks should be done after the constructor completes, not in the constructor.
-
-&#96;&#96;&#96;final&#96;&#96;&#96;字段的值在构造器中设置。假设对象被正确构造，一旦对象构造完成，那么其他线程不用同步就可以看得到&#96;&#96;&#96;final&#96;&#96;&#96;字段的值。另外，被这些&#96;&#96;&#96;final&#96;&#96;&#96;字段引用的对象或者数组的可见值肯定至少是跟&#96;&#96;&#96;final&#96;&#96;&#96;字段一样新。
-
-那么怎样才能说一个构造器是被合理适当地构造了？
-
-简单说就是在对象构造过程中，对该对象的引用都不允许**“引用逃逸”**(escape)。（详见[ Safe Construction Techniques for examples](http:&#x2F;&#x2F;www-106.ibm.com&#x2F;developerworks&#x2F;java&#x2F;library&#x2F;j-jtp0618.html)）
-
-**也就是说不要把对该对象的引用放在任何该对象会被构造并且其他线程还能看的到的地方，不要在构造器中分配&#96;&#96;&#96;static&#96;&#96;&#96;变量，不要在构造器中注册&#96;&#96;&#96;listener&#96;&#96;&#96;等等。这种操作应该放在构造器完成之后，而不是构造器里面。**
-
-&gt;以下是正确的使用方式：
-
-&gt;&#96;&#96;&#96;java
-&gt;class FinalFieldExample &#123;
-&gt;final int x;
-&gt;int y;
-&gt;static FinalFieldExample f;
-&gt;public FinalFieldExample() &#123;
-&gt;x &#x3D; 3;
-&gt;y &#x3D; 4;
-&gt;&#125;
-
-&gt;static void writer() &#123;
-&gt;f &#x3D; new FinalFieldExample();
-&gt;&#125;
-
-&gt;static void reader() &#123;
-&gt;if (f !&#x3D; null) &#123;
-int i &#x3D; f.x;
-int j &#x3D; f.y;
-&gt;&#125;
-&gt;&#125;
-&gt;&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<span class="token operator">></span><span class="token keyword">static</span> <span class="token keyword">void</span> <span class="token function">reader</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+<span class="token operator">></span><span class="token keyword">if</span> <span class="token punctuation">(</span>f <span class="token operator">!=</span> <span class="token keyword">null</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+<span class="token keyword">int</span> i <span class="token operator">=</span> f<span class="token punctuation">.</span>x<span class="token punctuation">;</span>
+<span class="token keyword">int</span> j <span class="token operator">=</span> f<span class="token punctuation">.</span>y<span class="token punctuation">;</span>
+<span class="token operator">></span><span class="token punctuation">&#125;</span>
+<span class="token operator">></span><span class="token punctuation">&#125;</span>
+<span class="token operator">></span><span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 <p>The class above is an example of how final fields should be used. A thread executing <code>reader</code> is guaranteed to see the value 3 for <code>f.x</code>, because it is final. It is not guaranteed to see the value 4 for <code>y</code>, because it is not final. </p>
 </blockquote>
 <p>从代码中可以看到，<strong>构造器仅仅是对属性值进行了初始化，构造器中并没有任何引用该对象的代码</strong>。</p>
 <p>这样一个线程在执行<code>reader()</code>方法时，一定能够看得到<code>f.x=3</code>。</p>
-<p>因为它是<code>final</code>的，这样尽管可能在构造<code>f</code>对象时，先返回了对象指针（参考上篇文章双重检查方法创建单例），但Java内存模型一定保证了返回指针前把<code>final</code>字段的值给初始化了，但不一定看得到<code>f.y=4</code>。</p>
+<p><strong>因为它是<code>final</code>的，这样尽管可能在构造<code>f</code>对象时，先返回了对象指针（参考上篇文章双重检查方法创建单例），但Java内存模型一定保证了返回指针前把<code>final</code>字段的值给初始化了，但不一定看得到<code>f.y=4</code>。</strong></p>
 <blockquote>
 <p>If <code>FinalFieldExample</code>‘s constructor looked like this:</p>
 <pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token operator">></span><span class="token keyword">public</span> <span class="token class-name">FinalFieldExample</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span> <span class="token comment">// bad!</span>
@@ -678,9 +609,7 @@ int j &#x3D; f.y;
 <p>There is no defined behavior if you want to use JNI to change final fields.</p>
 <p>——<a target="_blank" rel="noopener" href="http://www.cs.umd.edu/~pugh/java/memoryModel/jsr-133-faq.html#finalWrong"><strong>JSR 133 (Java Memory Model) FAQ</strong> Jeremy Manson and Brian Goetz, February 2004</a></p>
 </blockquote>
-<p><del>如果一个<code>final</code>字段引用的是对象或者数组，Java内存模型保证<code>final</code>字段的指针指向是正确的，但是不保证对象或数组中的值是正确的。</del></p>
-<p><del>所以<strong>“正确构造”</strong>意思是，构造器完成后，final的引用都更新了，但不保证你引用的对象或数组中的值是最新的。</del></p>
-<p><del>如果一个线程构造了一个<strong>不变的对象</strong>（即该对象中只有<code>final</code>字段），你想确定这个对象是否能够正确地被其他线程看见，你仍需要用 <code>synchronization</code>。你要防止构造后被其他线程更改了<code>final</code>字段引用的对象或数组的值。</del></p>
+<p>上面这段话总结起来就是，如果你构造函数里面有个<code>final</code>指针指向的是数组或者对象，如果这个数组和对象在被构造的时候，其他线程也可能在操作这个数组或对象，那么这个数组和对象就就是非线程安全的。你还是要在访问的地方加锁才可以保证其他线程看到的值都是最新的。</p>
 <h3 id="补充-逃逸分析"><a href="#补充-逃逸分析" class="headerlink" title="补充-逃逸分析"></a>补充-逃逸分析</h3><p>JVM优化技术，通过编译时分析对象动态作用域，判断当一个对象在方法内定义后，是否可能逃逸，分成几个不同的逃逸程度。</p>
 <p>不逃逸：变量仅在方法内使用，别的方法和线程无法访问。</p>
 <p>方法逃逸：通过传参，被外部方法引用，但在同一线程内。</p>
@@ -1462,7 +1391,7 @@ int j &#x3D; f.y;
             <br>
             
             &nbsp;<i class="fas fa-chart-area"></i>&nbsp;站点总字数:&nbsp;<span
-                class="white-color">60.4k</span>&nbsp;字
+                class="white-color">61.2k</span>&nbsp;字
             
             
             

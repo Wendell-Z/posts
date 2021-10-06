@@ -4,7 +4,7 @@
 
 <head>
     <meta charset="utf-8">
-    <meta name="keywords" content="Java并发12:面向对象与并发, Wendell-Z">
+    <meta name="keywords" content="Kafka基本概念和常见结构模型, Wendell-Z">
     <meta name="description" content="">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
@@ -16,7 +16,7 @@
     <!-- Global site tag (gtag.js) - Google Analytics -->
 
 
-    <title>Java并发12:面向对象与并发 | Wendell-Z</title>
+    <title>Kafka基本概念和常见结构模型 | Wendell-Z</title>
     <link rel="icon" type="image/png" href="/favicon.png">
 
     <link rel="stylesheet" type="text/css" href="/libs/awesome/css/all.css">
@@ -310,12 +310,12 @@
 
 
 
-<div class="bg-cover pd-header post-cover" style="background-image: url('https://images-1252818907.cos.ap-chengdu.myqcloud.com/images/java并发编程.jpg')">
+<div class="bg-cover pd-header post-cover" style="background-image: url('https://images-1252818907.cos.ap-chengdu.myqcloud.com/%20images/%20e03abf48-2d90-11e6-875f-4ba7939473e4.jpg')">
     <div class="container" style="right: 0px;left: 0px;">
         <div class="row">
             <div class="col s12 m12 l12">
                 <div class="brand">
-                    <h1 class="description center-align post-title">Java并发12:面向对象与并发</h1>
+                    <h1 class="description center-align post-title">Kafka基本概念和常见结构模型</h1>
                 </div>
             </div>
         </div>
@@ -431,12 +431,8 @@
                     
                     <div class="article-tag">
                         
-                            <a href="/tags/Java/">
-                                <span class="chip bg-color">Java</span>
-                            </a>
-                        
-                            <a href="/tags/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/">
-                                <span class="chip bg-color">并发编程</span>
+                            <a href="/tags/Kafka/">
+                                <span class="chip bg-color">Kafka</span>
                             </a>
                         
                     </div>
@@ -447,8 +443,8 @@
                     <div class="post-cate">
                         <i class="fas fa-bookmark fa-fw icon-category"></i>
                         
-                            <a href="/categories/%E5%90%8E%E7%AB%AF/" class="post-category">
-                                后端
+                            <a href="/categories/Kafka/" class="post-category">
+                                Kafka
                             </a>
                         
                     </div>
@@ -460,7 +456,7 @@
                 
                 <div class="post-date info-break-policy">
                     <i class="far fa-calendar-minus fa-fw"></i>发布日期:&nbsp;&nbsp;
-                    2020-04-09
+                    2021-10-06
                 </div>
                 
 
@@ -469,14 +465,14 @@
                 
                 <div class="info-break-policy">
                     <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
-                    766
+                    1.3k
                 </div>
                 
 
                 
                 <div class="info-break-policy">
                     <i class="far fa-clock fa-fw"></i>阅读时长:&nbsp;&nbsp;
-                    3 分
+                    4 分
                 </div>
                 
 
@@ -504,88 +500,32 @@
 
         <div class="card-content article-card-content">
             <div id="articleContent">
-                <h3 id="Java并发12-面向对象与并发"><a href="#Java并发12-面向对象与并发" class="headerlink" title="Java并发12:面向对象与并发"></a>Java并发12:面向对象与并发</h3><p>在Java 语言里，面向对象思想能让并发编程更简单。</p>
-<h3 id="封装共享变量"><a href="#封装共享变量" class="headerlink" title="封装共享变量"></a>封装共享变量</h3><p><strong>封装：将属性和实现细节封装在对象内部，外界对象只能通过目标对象提供的公共方法来间接访问这些内部属性。</strong></p>
-<p><strong>Tip:将共享变量作为对象属性封装在内部，对所有公共方法制定并发访问策略。</strong></p>
-<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">Counter</span> <span class="token punctuation">&#123;</span>
-  <span class="token keyword">private</span> <span class="token keyword">long</span> value<span class="token punctuation">;</span>
-  <span class="token comment">//将计数器封装为对象，提供了线程安全的方法</span>
-  <span class="token keyword">synchronized</span> <span class="token keyword">long</span> <span class="token function">get</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">&#123;</span>
-    <span class="token keyword">return</span> value<span class="token punctuation">;</span>
-  <span class="token punctuation">&#125;</span>
-  <span class="token keyword">synchronized</span> <span class="token keyword">long</span> <span class="token function">addOne</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">&#123;</span>
-    <span class="token keyword">return</span> <span class="token operator">++</span>value<span class="token punctuation">;</span>
-  <span class="token punctuation">&#125;</span>
-<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-
-<p><strong>Tip:很多变量实际上是不变的，如身份证号等，将它声明为final。</strong></p>
-<h3 id="识别共享变量间的约束条件"><a href="#识别共享变量间的约束条件" class="headerlink" title="识别共享变量间的约束条件"></a>识别共享变量间的约束条件</h3><p>约束条件决定了并发访问策略。</p>
-<p>一定要识别出所有共享变量之间的约束条件，如果约束条件识别不足，很可能导致制定的并发访问策略南辕北辙。</p>
-<p>共享变量之间的约束条件，反映在代码里，基本上都会有 if 语句，<strong>一定要特别注意竞态条件</strong>。</p>
-<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">SafeWM</span> <span class="token punctuation">&#123;</span>
-  <span class="token comment">// 库存上限</span>
-  <span class="token keyword">private</span> <span class="token keyword">final</span> <span class="token class-name">AtomicLong</span> upper <span class="token operator">=</span>
-        <span class="token keyword">new</span> <span class="token class-name">AtomicLong</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-  <span class="token comment">// 库存下限</span>
-  <span class="token keyword">private</span> <span class="token keyword">final</span> <span class="token class-name">AtomicLong</span> lower <span class="token operator">=</span>
-        <span class="token keyword">new</span> <span class="token class-name">AtomicLong</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-  <span class="token comment">// 设置库存上限</span>
-  <span class="token keyword">void</span> <span class="token function">setUpper</span><span class="token punctuation">(</span><span class="token keyword">long</span> v<span class="token punctuation">)</span><span class="token punctuation">&#123;</span>
-    <span class="token comment">// 检查参数合法性</span>
-    <span class="token keyword">if</span> <span class="token punctuation">(</span>v <span class="token operator">&lt;</span> lower<span class="token punctuation">.</span><span class="token function">get</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
-      <span class="token keyword">throw</span> <span class="token keyword">new</span> <span class="token class-name">IllegalArgumentException</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">&#125;</span>
-    upper<span class="token punctuation">.</span><span class="token function">set</span><span class="token punctuation">(</span>v<span class="token punctuation">)</span><span class="token punctuation">;</span>
-  <span class="token punctuation">&#125;</span>
-  <span class="token comment">// 设置库存下限</span>
-  <span class="token keyword">void</span> <span class="token function">setLower</span><span class="token punctuation">(</span><span class="token keyword">long</span> v<span class="token punctuation">)</span><span class="token punctuation">&#123;</span>
-    <span class="token comment">// 检查参数合法性</span>
-    <span class="token keyword">if</span> <span class="token punctuation">(</span>v <span class="token operator">></span> upper<span class="token punctuation">.</span><span class="token function">get</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
-      <span class="token keyword">throw</span> <span class="token keyword">new</span> <span class="token class-name">IllegalArgumentException</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">&#125;</span>
-    lower<span class="token punctuation">.</span><span class="token function">set</span><span class="token punctuation">(</span>v<span class="token punctuation">)</span><span class="token punctuation">;</span>
-  <span class="token punctuation">&#125;</span>
-  <span class="token comment">// 省略其他业务代码</span>
-<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-
-<p>第11行和第19行践行了库存上下限关系，但由于竞态条件导致线程不安全。</p>
-<h3 id="制定并发访问策略"><a href="#制定并发访问策略" class="headerlink" title="制定并发访问策略"></a>制定并发访问策略</h3><h4 id="方案策略"><a href="#方案策略" class="headerlink" title="方案策略"></a>方案策略</h4><ul>
-<li>避免共享：主要由线程本地存储&amp;为每个任务分配独立线程实现。</li>
-<li>不变模式：Java领域较少，其他领域如 Actor 模式、CSP 模式以及函数式编程的基础都是不变模式。</li>
-<li>管程和其他同步工具：管程以及并发包中适用于不同场景的工具。</li>
-</ul>
-<h4 id="Tips"><a href="#Tips" class="headerlink" title="Tips"></a>Tips</h4><ul>
-<li>优先使用成熟工具类：Java并发包</li>
-<li>迫不得已使用同步原语：如<code>synchronized</code>、<code>Lock</code>、<code>Semaphore</code>。</li>
-<li>避免过早优化：安全第一，先保证程序安全，出现性能瓶颈再优化。</li>
-</ul>
-<h3 id="思考"><a href="#思考" class="headerlink" title="思考"></a>思考</h3><p>上述代码如何使其线程安全？</p>
-<ul>
-<li>对<code>setUpper()</code>&amp;<code>setLower</code>加锁</li>
-<li>将<code>upper</code>和<code>lower</code>封装成类，避免静态条件产生。</li>
-</ul>
-<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">Boundary</span> <span class="token punctuation">&#123;</span>
-    <span class="token keyword">private</span> <span class="token keyword">final</span> <span class="token keyword">int</span> upper<span class="token punctuation">;</span>
-    <span class="token keyword">private</span> <span class="token keyword">final</span> <span class="token keyword">int</span> lower<span class="token punctuation">;</span>
-    <span class="token keyword">public</span> <span class="token class-name">Boundary</span><span class="token punctuation">(</span><span class="token keyword">int</span> upper<span class="token punctuation">,</span> <span class="token keyword">int</span> lower<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
-        <span class="token keyword">if</span> <span class="token punctuation">(</span>upper <span class="token operator">&lt;=</span> lower<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
-            <span class="token keyword">throw</span> <span class="token keyword">new</span> <span class="token class-name">IllegalArgumentException</span><span class="token punctuation">(</span><span class="token string">"参数错误！"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token punctuation">&#125;</span>
-        <span class="token keyword">this</span><span class="token punctuation">.</span>upper <span class="token operator">=</span> upper<span class="token punctuation">;</span>
-        <span class="token keyword">this</span><span class="token punctuation">.</span>lower <span class="token operator">=</span> lower<span class="token punctuation">;</span>
-    <span class="token punctuation">&#125;</span>
-<span class="token punctuation">&#125;</span>
-<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">SafeWM</span> <span class="token punctuation">&#123;</span>
-    <span class="token keyword">private</span> <span class="token class-name">Boundary</span> boundary<span class="token punctuation">;</span>
-    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">setBoundary</span><span class="token punctuation">(</span><span class="token class-name">Boundary</span> boundary<span class="token punctuation">)</span><span class="token punctuation">&#123;</span>
-        <span class="token keyword">this</span><span class="token punctuation">.</span>boundary <span class="token operator">=</span> boundary<span class="token punctuation">;</span>
-    <span class="token punctuation">&#125;</span>
-<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-
-<h3 id="别人的总结"><a href="#别人的总结" class="headerlink" title="别人的总结"></a>别人的总结</h3><blockquote>
-<p>我的理解是set方法线程不安全的点在于竞态条件中获取到的值通过了判断，但是在set的时候可能不是最新的。方法二类封装的两个属性都是不可变的，在setBoundary()方法中去赋值就不会存在值被更新的情况，类似于ThreadLocal的独立副本。</p>
-<p>——<strong>大饶Raysir</strong></p>
-</blockquote>
+                <h3 id="Kafka入门一"><a href="#Kafka入门一" class="headerlink" title="Kafka入门一"></a>Kafka入门一</h3><h3 id="基本概念"><a href="#基本概念" class="headerlink" title="基本概念"></a>基本概念</h3><p><img src="https://images-1252818907.cos.ap-chengdu.myqcloud.com/%20images/%20image-20211006170052801.png"></p>
+<h4 id="Producer"><a href="#Producer" class="headerlink" title="Producer"></a>Producer</h4><p>生产者，负责创建消息，将其投送到<code>Kafka</code>中。</p>
+<h4 id="Consumer"><a href="#Consumer" class="headerlink" title="Consumer"></a>Consumer</h4><p>消费者，连接到<code>kafka</code>上并接收消息，进行相应的业务处理。</p>
+<h4 id="Broker"><a href="#Broker" class="headerlink" title="Broker"></a>Broker</h4><p><code>Kafka</code> 的服务器端由被称为 <code>Broker</code> 的服务进程构成，即一个 <code>Kafka</code> 集群由多个 <code>Broker</code> 组成，<code>Broker</code> 负责接收和处理客户端发送过来的请求，以及对消息进行持久化。虽然多个 <code>Broker</code> 进程能够运行在同一台机器上，但更常见的做法是将不同的 <code>Broker</code> 分散运行在不同的机器上，这样如果集群中某一台机器宕机，即使在它上面运行的所有 <code>Broker</code> 进程都挂掉了，其他机器上的 <code>Broker</code> 也依然能够对外提供服务。这其实就是 <code>Kafka</code> 提供高可用的手段之一。</p>
+<h4 id="ZooKeeper"><a href="#ZooKeeper" class="headerlink" title="ZooKeeper"></a>ZooKeeper</h4><p>负责集群元数据管理，控制器的选举等操作。</p>
+<p><img src="https://images-1252818907.cos.ap-chengdu.myqcloud.com/%20images/%2058c35d3ab0921bf0476e3ba14069d291.jpg" alt="img"></p>
+<h4 id="Topic-主题"><a href="#Topic-主题" class="headerlink" title="Topic(主题)"></a>Topic(主题)</h4><p>主题是一个逻辑上的概念。主题是承载消息的逻辑容器，在实际使用中多用来区分具体的业务。</p>
+<h4 id="Partition-分区"><a href="#Partition-分区" class="headerlink" title="Partition(分区)"></a>Partition(分区)</h4><p>一个主题下可以有多个分区，一个分区只属于单个主题。分区在存储层面可以看做一个可追加的日志文件。</p>
+<h4 id="Offset-位移"><a href="#Offset-位移" class="headerlink" title="Offset(位移)"></a>Offset(位移)</h4><p>消息在被追加到分区日志文件的时候都会分配一个特定的偏移量。<code>offset</code>是消息在分区中的唯一标识，<code>Kafka</code>通过它来保证消息在分区内的顺序性。</p>
+<p><strong>不过<code>offset</code>并不跨越分区，即<code>Kafka</code>保证的是分区有序而不是主题有序。</strong></p>
+<h4 id="Replica-副本"><a href="#Replica-副本" class="headerlink" title="Replica(副本)"></a>Replica(副本)</h4><p><code>Kafka</code> 中同一条消息能够被拷贝到多个地方以提供数据冗余，这些地方就是所谓的副本。</p>
+<p>副本还分为领导者副本（<code>Leader Replica</code>）和追随者副本(<code>Follower Replica</code>)，各自有不同的角色划分。</p>
+<p>副本是在分区层级下的，即每个分区可配置多个副本实现高可用。</p>
+<p>副本的工作机制：生产者总是向领导者副本写消息；而消费者总是从领导者副本读消息。</p>
+<p>至于追随者副本，它只做一件事：向领导者副本发送请求，请求领导者把最新生产的消息发给它，这样它能保持与领导者的同步。</p>
+<h4 id="Consumer-Group-消费者组"><a href="#Consumer-Group-消费者组" class="headerlink" title="Consumer Group(消费者组)"></a>Consumer Group(消费者组)</h4><p>消费者组：消费者实例共同组成一个组来消费一组主题。这组主题中的每个分区都只会被组内的一个消费者实例消费，其他消费者实例不能消费它。</p>
+<p>主要是为了提升消费者端的吞吐量。多个消费者实例同时消费，加速整个消费端的吞吐量（<code>TPS</code>）。</p>
+<h4 id="Consumer-Offset"><a href="#Consumer-Offset" class="headerlink" title="Consumer Offset"></a>Consumer Offset</h4><p>每个消费者在消费消息的过程中必然需要有个字段记录它当前消费到了分区的哪个位置上，这个字段就是消费者位移（<code>Consumer Offset</code>）。</p>
+<p>这和上面所说的位移完全不是一个概念。上面的“位移”表征的是分区内的消息位置，是不变的，即一旦消息被成功写入到一个分区上，它的位移值就是固定的了。</p>
+<p>而消费者位移则不同，它可能是随时变化的，毕竟它是消费者消费进度的指示器嘛。另外每个消费者有着自己的消费者位移，因此一定要区分这两类位移的区别。消息在分区中的位移称为分区位移，而把消费者端的位移称为消费者位移。</p>
+<h4 id="ISR"><a href="#ISR" class="headerlink" title="ISR"></a>ISR</h4><p>分区内所有副本被称为AR（<code>Assigned Replicas</code>）。所有与leader副本保持一定程度同步的副本（包括<code>leader</code>副本在内）组成<code>ISR</code>（<code>In-Sync Replicas</code>）。</p>
+<p><code>ISR</code>集合是<code>AR</code>集合的一个子集。消息会先发送到<code>leader</code>副本，然后<code>follower</code>副本才能从<code>leader</code>副本中拉取消息进行同步，同步期间内<code>follower</code>副本相对<code>leader</code>副本而言会有一定程度的滞后。</p>
+<p>“一定程度的同步”是指可忍受的滞后范围，这个范围可以通过参数进行配置。与<code>leader</code>副本同步滞后过多的副本（不包括<code>leader</code>副本）组成<code>OSR（Out-Of-Sync Replicas）</code>。</p>
+<p>因此<code>AR=ISR+OSR</code>，正常情况下，所有的<code>follower</code>副本都应该与<code>leader</code>副本保持一定程度的同步，即<code>AR=ISR</code>，<code>OSR</code>集合为空。</p>
+<p><code>leader</code>副本负责维护和跟踪<code>ISR</code>集合中所有的<code>follower</code>副本的滞后状态，当<code>follower</code>副本落后太多或失效时，<code>leader</code>副本会把他从<code>ISR</code>集合中剔除。</p>
+<p>如果OSR集合中有<code>follower</code>副本追上了<code>leader</code>副本，那么副本会把它从<code>OSR</code>集合转移至<code>ISR</code>集合。默认情况下，当<code>leader</code>副本发生故障时，只有在<code>ISR</code>集合中的副本才有资格被选举为新的<code>leader</code>，而在<code>OSR</code>集合中的副本则没有任何机会（但是可以通过修改相应的参数配置来改变）。</p>
 
                 
             </div>
@@ -602,7 +542,7 @@
                     </i>
                 </span>
                 <span class="reprint-info">
-                    <a href="/about" rel="external nofollow noreferrer">Wendell</a>
+                    <a href="/about" rel="external nofollow noreferrer">Wendell-Z</a>
                 </span>
             </div>
             <div class="reprint__type">
@@ -612,7 +552,7 @@
                     </i>
                 </span>
                 <span class="reprint-info">
-                    <a href="https://wendell-z.github.io/posts/2020/04/09/java-bing-fa-12-mian-xiang-dui-xiang-yu-bing-fa/">https://wendell-z.github.io/posts/2020/04/09/java-bing-fa-12-mian-xiang-dui-xiang-yu-bing-fa/</a>
+                    <a href="https://wendell-z.github.io/posts/2021/10/06/kafka-ru-men-yi/">https://wendell-z.github.io/posts/2021/10/06/kafka-ru-men-yi/</a>
                 </span>
             </div>
             <div class="reprint__notice">
@@ -625,7 +565,7 @@
                     本博客所有文章除特別声明外，均采用
                     <a href="https://creativecommons.org/licenses/by/4.0/deed.zh" rel="external nofollow noreferrer" target="_blank">CC BY 4.0</a>
                     许可协议。转载请注明来源
-                    <a href="/about" target="_blank">Wendell</a>
+                    <a href="/about" target="_blank">Wendell-Z</a>
                     !
                 </span>
             </div>
@@ -650,12 +590,8 @@
                     
                         <div class="article-tag">
                             
-                                <a href="/tags/Java/">
-                                    <span class="chip bg-color">Java</span>
-                                </a>
-                            
-                                <a href="/tags/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/">
-                                    <span class="chip bg-color">并发编程</span>
+                                <a href="/tags/Kafka/">
+                                    <span class="chip bg-color">Kafka</span>
                                 </a>
                             
                         </div>
@@ -1088,49 +1024,47 @@
 <article id="prenext-posts" class="prev-next articles">
     <div class="row article-row">
         
-        <div class="article col s12 m6" data-aos="fade-up">
+        <div class="article col s12 m6" data-aos="fade-up" data-aos="fade-up">
             <div class="article-badge left-badge text-color">
-                <i class="fas fa-chevron-left"></i>&nbsp;上一篇</div>
+                <i class="far fa-dot-circle"></i>&nbsp;本篇
+            </div>
             <div class="card">
-                <a href="/2020/04/10/java-bing-fa-13-jie-duan-xiao-jie/">
+                <a href="/2021/10/06/kafka-ru-men-yi/">
                     <div class="card-image">
                         
-                        <img src="https://images-1252818907.cos.ap-chengdu.myqcloud.com/images/java并发编程.jpg" class="responsive-img" alt="Java并发13:阶段小结">
+                        <img src="https://images-1252818907.cos.ap-chengdu.myqcloud.com/%20images/%20e03abf48-2d90-11e6-875f-4ba7939473e4.jpg" class="responsive-img" alt="Kafka基本概念和常见结构模型">
                         
-                        <span class="card-title">Java并发13:阶段小结</span>
+                        <span class="card-title">Kafka基本概念和常见结构模型</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
                     <div class="summary block-with-text">
                         
-                            前13篇笔记的阶段小结
+                            Kafka基本概念和常见结构模型
                         
                     </div>
                     <div class="publish-info">
-                        <span class="publish-date">
-                            <i class="far fa-clock fa-fw icon-date"></i>2020-04-10
-                        </span>
+                            <span class="publish-date">
+                                <i class="far fa-clock fa-fw icon-date"></i>2021-10-06
+                            </span>
                         <span class="publish-author">
                             
                             <i class="fas fa-bookmark fa-fw icon-category"></i>
                             
-                            <a href="/categories/%E5%90%8E%E7%AB%AF/" class="post-category">
-                                    后端
+                            <a href="/categories/Kafka/" class="post-category">
+                                    Kafka
                                 </a>
                             
                             
                         </span>
                     </div>
                 </div>
+
                 
                 <div class="card-action article-tags">
                     
-                    <a href="/tags/Java/">
-                        <span class="chip bg-color">Java</span>
-                    </a>
-                    
-                    <a href="/tags/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/">
-                        <span class="chip bg-color">并发编程</span>
+                    <a href="/tags/Kafka/">
+                        <span class="chip bg-color">Kafka</span>
                     </a>
                     
                 </div>
@@ -1144,30 +1078,30 @@
                 下一篇&nbsp;<i class="fas fa-chevron-right"></i>
             </div>
             <div class="card">
-                <a href="/2020/04/08/java-bing-fa-11-ju-bu-bian-liang/">
+                <a href="/2021/10/03/elasticsearch-suo-yin-liu-cheng/">
                     <div class="card-image">
                         
-                        <img src="https://images-1252818907.cos.ap-chengdu.myqcloud.com/images/java并发编程.jpg" class="responsive-img" alt="Java并发11:局部变量">
+                        <img src="https://images-1252818907.cos.ap-chengdu.myqcloud.com/%20images/%20unnamed.png" class="responsive-img" alt="Elasticsearch索引流程">
                         
-                        <span class="card-title">Java并发11:局部变量</span>
+                        <span class="card-title">Elasticsearch索引流程</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
                     <div class="summary block-with-text">
                         
-                            为什么说局部变量是安全的？
+                            文档在ES中存储流程变化
                         
                     </div>
                     <div class="publish-info">
                             <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2020-04-08
+                                <i class="far fa-clock fa-fw icon-date"></i>2021-10-03
                             </span>
                         <span class="publish-author">
                             
                             <i class="fas fa-bookmark fa-fw icon-category"></i>
                             
-                            <a href="/categories/%E5%90%8E%E7%AB%AF/" class="post-category">
-                                    后端
+                            <a href="/categories/Elasticsearch/" class="post-category">
+                                    Elasticsearch
                                 </a>
                             
                             
@@ -1177,12 +1111,8 @@
                 
                 <div class="card-action article-tags">
                     
-                    <a href="/tags/Java/">
-                        <span class="chip bg-color">Java</span>
-                    </a>
-                    
-                    <a href="/tags/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/">
-                        <span class="chip bg-color">并发编程</span>
+                    <a href="/tags/Elasticsearch/">
+                        <span class="chip bg-color">Elasticsearch</span>
                     </a>
                     
                 </div>

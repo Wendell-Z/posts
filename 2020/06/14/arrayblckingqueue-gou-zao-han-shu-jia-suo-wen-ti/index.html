@@ -553,8 +553,8 @@
 <ol>
 <li>数组变量<code>items</code>是用<code>final</code>修饰的。</li>
 </ol>
-<p>在一个对象的构造过程中，如果构造器没有出现外部指针引用当前对象的情况，即没有出现引用逃逸，那么<code>final</code>修饰的变量在在构造方法中被初始化时，如果被JVM会保证其他线程对<code>final</code>修饰变量的可见性。</p>
-<p>即在不出现引用逃逸的情况下，<code>fianl</code>会保证在构造器对<code>final</code>变量的初始化不会出现指令重排，并且在构造器完成后，其他线程访问<code>final</code>修饰的变量时，能够看到构造器完成时<code>final</code>修饰变量的最新值。<strong>也就是说在构造器中对<code>final</code>变量的初始化是线程安全的，但final指向对象中的值如果没有被<code>final</code>修饰，不保证它们的可见性，比如代码line20对数据元素赋值的操作。</strong></p>
+<p>在一个对象的构造过程中，如果构造器没有出现外部指针引用当前对象的情况，即没有出现引用逃逸，那么<code>final</code>修饰的变量在在构造方法中被初始化时，JVM会保证其他线程对<code>final</code>修饰变量的可见性。</p>
+<p>即在不出现引用逃逸的情况下，<code>final</code>会保证在构造器对<code>final</code>变量的初0始化不会出现指令重排，并且在构造器完成后，其他线程访问<code>final</code>修饰的变量时，能够看到构造器完成时<code>final</code>修饰变量的最新值。<strong>也就是说在构造器中对<code>final</code>变量的初始化是线程安全的，但final变量指向对象中的值如果没有被<code>final</code>修饰，不保证它们的可见性，比如代码line20对数组元素赋值的操作。</strong></p>
 <p>这里列出部分规范和解释，详情可以去链接或者看我之前文章<a target="_blank" rel="noopener" href="http://blog.justcoder.tech/2020/03/29/java-bing-fa-2-happens-before-gui-ze/">[Java并发-Happens-Before规则-final关键字]</a></p>
 <blockquote>
 <p>Set the <code>final</code> fields for an object in that object’s constructor; and do not write a reference to the object being constructed in a place where another thread can see it before the object’s constructor is finished. If this is followed, then when the object is seen by another thread, that thread will always see the correctly constructed version of that object’s <code>final</code> fields. <strong>It will also see versions of any object or array referenced by those <code>final</code> fields that are at least as up-to-date as the <code>final</code> fields are.</strong></p>
@@ -1338,7 +1338,7 @@
             <br>
             
             &nbsp;<i class="fas fa-chart-area"></i>&nbsp;站点总字数:&nbsp;<span
-                class="white-color">60.4k</span>&nbsp;字
+                class="white-color">61.2k</span>&nbsp;字
             
             
             
