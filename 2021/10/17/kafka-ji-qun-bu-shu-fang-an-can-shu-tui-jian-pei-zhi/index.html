@@ -4,7 +4,7 @@
 
 <head>
     <meta charset="utf-8">
-    <meta name="keywords" content="Java并发18-StampLock, Wendell-Z">
+    <meta name="keywords" content="Kafka集群部署方案&amp;参数推荐配置, Wendell-Z">
     <meta name="description" content="">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
@@ -16,7 +16,7 @@
     <!-- Global site tag (gtag.js) - Google Analytics -->
 
 
-    <title>Java并发18-StampLock | Wendell-Z</title>
+    <title>Kafka集群部署方案&amp;参数推荐配置 | Wendell-Z</title>
     <link rel="icon" type="image/png" href="/favicon.png">
 
     <link rel="stylesheet" type="text/css" href="/libs/awesome/css/all.css">
@@ -310,12 +310,12 @@
 
 
 
-<div class="bg-cover pd-header post-cover" style="background-image: url('https://images-1252818907.cos.ap-chengdu.myqcloud.com/images/java并发编程.jpg')">
+<div class="bg-cover pd-header post-cover" style="background-image: url('https://images-1252818907.cos.ap-chengdu.myqcloud.com/%20images/%20e03abf48-2d90-11e6-875f-4ba7939473e4.jpg')">
     <div class="container" style="right: 0px;left: 0px;">
         <div class="row">
             <div class="col s12 m12 l12">
                 <div class="brand">
-                    <h1 class="description center-align post-title">Java并发18-StampLock</h1>
+                    <h1 class="description center-align post-title">Kafka集群部署方案&amp;参数推荐配置</h1>
                 </div>
             </div>
         </div>
@@ -431,12 +431,8 @@
                     
                     <div class="article-tag">
                         
-                            <a href="/tags/Java/">
-                                <span class="chip bg-color">Java</span>
-                            </a>
-                        
-                            <a href="/tags/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/">
-                                <span class="chip bg-color">并发编程</span>
+                            <a href="/tags/Kafka/">
+                                <span class="chip bg-color">Kafka</span>
                             </a>
                         
                     </div>
@@ -447,8 +443,8 @@
                     <div class="post-cate">
                         <i class="fas fa-bookmark fa-fw icon-category"></i>
                         
-                            <a href="/categories/%E5%90%8E%E7%AB%AF/" class="post-category">
-                                后端
+                            <a href="/categories/Kafka/" class="post-category">
+                                Kafka
                             </a>
                         
                     </div>
@@ -460,7 +456,7 @@
                 
                 <div class="post-date info-break-policy">
                     <i class="far fa-calendar-minus fa-fw"></i>发布日期:&nbsp;&nbsp;
-                    2020-04-16
+                    2021-10-17
                 </div>
                 
 
@@ -469,14 +465,14 @@
                 
                 <div class="info-break-policy">
                     <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
-                    1k
+                    3.9k
                 </div>
                 
 
                 
                 <div class="info-break-policy">
                     <i class="far fa-clock fa-fw"></i>阅读时长:&nbsp;&nbsp;
-                    4 分
+                    14 分
                 </div>
                 
 
@@ -504,151 +500,152 @@
 
         <div class="card-content article-card-content">
             <div id="articleContent">
-                <h3 id="Java并发18-StampedLock"><a href="#Java并发18-StampedLock" class="headerlink" title="Java并发18-StampedLock"></a>Java并发18-StampedLock</h3><h3 id="StampedLock模式"><a href="#StampedLock模式" class="headerlink" title="StampedLock模式"></a>StampedLock模式</h3><p>读多写少场景下，<code>StampedLock</code>的性能比<code>ReadWriteLock</code>性能更好。</p>
-<pre class="line-numbers language-ReadWriteLock```支持读锁和写锁。" data-language="ReadWriteLock```支持读锁和写锁。"><code class="language-ReadWriteLock```支持读锁和写锁。">
-&#96;&#96;&#96;StampedLock&#96;&#96;&#96;支持写锁，悲观读锁和乐观读。
-
-&#96;StampedLock&#96; 的写锁和悲观读锁加锁成功后，会返回一个 &#96;stamp&#96;；解锁的时候，需要传入这个 &#96;stamp&#96;。
-
-&#96;&#96;&#96;java
-final StampedLock sl &#x3D; new StampedLock();
-  
-&#x2F;&#x2F; 获取&#x2F;释放悲观读锁示意代码
-long stamp &#x3D; sl.readLock();
-try &#123;
-  &#x2F;&#x2F;省略业务相关代码
-&#125; finally &#123;
-  sl.unlockRead(stamp);
-&#125;
-
-&#x2F;&#x2F; 获取&#x2F;释放写锁示意代码
-long stamp &#x3D; sl.writeLock();
-try &#123;
-  &#x2F;&#x2F;省略业务相关代码
-&#125; finally &#123;
-  sl.unlockWrite(stamp);
-&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-
-<p><strong><code>StampedLock</code>性能好的原因是因为它支持乐观读，乐观读即无锁。</strong></p>
-<h3 id="官方示例展示"><a href="#官方示例展示" class="headerlink" title="官方示例展示"></a>官方示例展示</h3><pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">class</span> <span class="token class-name">Point</span> <span class="token punctuation">&#123;</span>
-  <span class="token keyword">private</span> <span class="token keyword">int</span> x<span class="token punctuation">,</span> y<span class="token punctuation">;</span>
-  <span class="token keyword">final</span> <span class="token class-name">StampedLock</span> sl <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">StampedLock</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-  <span class="token comment">//计算到原点的距离  </span>
-  <span class="token keyword">int</span> <span class="token function">distanceFromOrigin</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
-    <span class="token comment">// 乐观读</span>
-    <span class="token keyword">long</span> stamp <span class="token operator">=</span> sl<span class="token punctuation">.</span><span class="token function">tryOptimisticRead</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token comment">// 读入局部变量，</span>
-    <span class="token comment">// 读的过程数据可能被修改</span>
-    <span class="token keyword">int</span> curX <span class="token operator">=</span> x<span class="token punctuation">,</span> curY <span class="token operator">=</span> y<span class="token punctuation">;</span>
-    <span class="token comment">//判断执行读操作期间，</span>
-    <span class="token comment">//是否存在写操作，如果存在，</span>
-    <span class="token comment">//则sl.validate返回false</span>
-    <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>sl<span class="token punctuation">.</span><span class="token function">validate</span><span class="token punctuation">(</span>stamp<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">&#123;</span>
-      <span class="token comment">// 升级为悲观读锁</span>
-      stamp <span class="token operator">=</span> sl<span class="token punctuation">.</span><span class="token function">readLock</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-      <span class="token keyword">try</span> <span class="token punctuation">&#123;</span>
-        curX <span class="token operator">=</span> x<span class="token punctuation">;</span>
-        curY <span class="token operator">=</span> y<span class="token punctuation">;</span>
-      <span class="token punctuation">&#125;</span> <span class="token keyword">finally</span> <span class="token punctuation">&#123;</span>
-        <span class="token comment">//释放悲观读锁</span>
-        sl<span class="token punctuation">.</span><span class="token function">unlockRead</span><span class="token punctuation">(</span>stamp<span class="token punctuation">)</span><span class="token punctuation">;</span>
-      <span class="token punctuation">&#125;</span>
-    <span class="token punctuation">&#125;</span>
-    <span class="token keyword">return</span> <span class="token class-name">Math</span><span class="token punctuation">.</span><span class="token function">sqrt</span><span class="token punctuation">(</span>curX <span class="token operator">*</span> curX <span class="token operator">+</span> curY <span class="token operator">*</span> curY<span class="token punctuation">)</span><span class="token punctuation">;</span>
-  <span class="token punctuation">&#125;</span>
-<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-
-<h3 id="使用注意事项"><a href="#使用注意事项" class="headerlink" title="使用注意事项"></a>使用注意事项</h3><p><code>StampedLock</code>的功能仅仅是<code>ReadWriteLock</code>的子集，<code>StampedLock</code>不支持重入。</p>
-<p><code>StampedLock</code>的悲观读锁、写锁都不支持条件变量。</p>
-<p>使用<code>StampedLock</code>一定不要调用中断操作，如果需要支持中断功能，一定使用可中断的悲观读锁 <code>readLockInterruptibly()</code>和写锁 <code>writeLockInterruptibly()</code>。</p>
-<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">final</span> <span class="token class-name">StampedLock</span> lock <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">StampedLock</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-<span class="token class-name">Thread</span> T1 <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">Thread</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">-></span><span class="token punctuation">&#123;</span>
-  <span class="token comment">// 获取写锁</span>
-  lock<span class="token punctuation">.</span><span class="token function">writeLock</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-  <span class="token comment">// 永远阻塞在此处，不释放写锁</span>
-  <span class="token class-name">LockSupport</span><span class="token punctuation">.</span><span class="token function">park</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-<span class="token punctuation">&#125;</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-T1<span class="token punctuation">.</span><span class="token function">start</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-<span class="token comment">// 保证T1获取写锁</span>
-<span class="token class-name">Thread</span><span class="token punctuation">.</span><span class="token function">sleep</span><span class="token punctuation">(</span><span class="token number">100</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-<span class="token class-name">Thread</span> T2 <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">Thread</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">-></span>
-  <span class="token comment">//阻塞在悲观读锁</span>
-  lock<span class="token punctuation">.</span><span class="token function">readLock</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
-<span class="token punctuation">)</span><span class="token punctuation">;</span>
-T2<span class="token punctuation">.</span><span class="token function">start</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-<span class="token comment">// 保证T2阻塞在读锁</span>
-<span class="token class-name">Thread</span><span class="token punctuation">.</span><span class="token function">sleep</span><span class="token punctuation">(</span><span class="token number">100</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-<span class="token comment">//中断线程T2</span>
-<span class="token comment">//会导致线程T2所在CPU飙升</span>
-<span class="token comment">//内部实现里while循环里面对中断的处理有点问题</span>
-T2<span class="token punctuation">.</span><span class="token function">interrupt</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-T2<span class="token punctuation">.</span><span class="token function">join</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-
-<h3 id="使用模板"><a href="#使用模板" class="headerlink" title="使用模板"></a>使用模板</h3><p><code>StampedLock</code>读模板：</p>
-<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">final</span> <span class="token class-name">StampedLock</span> sl <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">StampedLock</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-
-<span class="token comment">// 乐观读</span>
-<span class="token keyword">long</span> stamp <span class="token operator">=</span> sl<span class="token punctuation">.</span><span class="token function">tryOptimisticRead</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-<span class="token comment">// 读入方法局部变量</span>
-<span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
-<span class="token comment">// 校验stamp</span>
-<span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>sl<span class="token punctuation">.</span><span class="token function">validate</span><span class="token punctuation">(</span>stamp<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">&#123;</span>
-  <span class="token comment">// 升级为悲观读锁</span>
-  stamp <span class="token operator">=</span> sl<span class="token punctuation">.</span><span class="token function">readLock</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-  <span class="token keyword">try</span> <span class="token punctuation">&#123;</span>
-    <span class="token comment">// 读入方法局部变量</span>
-    <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
-  <span class="token punctuation">&#125;</span> <span class="token keyword">finally</span> <span class="token punctuation">&#123;</span>
-    <span class="token comment">//释放悲观读锁</span>
-    sl<span class="token punctuation">.</span><span class="token function">unlockRead</span><span class="token punctuation">(</span>stamp<span class="token punctuation">)</span><span class="token punctuation">;</span>
-  <span class="token punctuation">&#125;</span>
-<span class="token punctuation">&#125;</span>
-<span class="token comment">//使用方法局部变量执行业务操作</span>
-<span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-
-<p><code>StampedLock</code>写模板：</p>
-<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">long</span> stamp <span class="token operator">=</span> sl<span class="token punctuation">.</span><span class="token function">writeLock</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-<span class="token keyword">try</span> <span class="token punctuation">&#123;</span>
-  <span class="token comment">// 写共享变量</span>
-  <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
-<span class="token punctuation">&#125;</span> <span class="token keyword">finally</span> <span class="token punctuation">&#123;</span>
-  sl<span class="token punctuation">.</span><span class="token function">unlockWrite</span><span class="token punctuation">(</span>stamp<span class="token punctuation">)</span><span class="token punctuation">;</span>
-<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-
-<h3 id="思考"><a href="#思考" class="headerlink" title="思考"></a>思考</h3><p>找BUG</p>
-<p><code>StampedLock</code>支持锁的降级（<code>tryConvertToReadLock()</code>）和升级（<code>tryConvertToWriteLock()</code>）</p>
-<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">private</span> <span class="token keyword">double</span> x<span class="token punctuation">,</span> y<span class="token punctuation">;</span>
-<span class="token keyword">final</span> <span class="token class-name">StampedLock</span> sl <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">StampedLock</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-<span class="token comment">// 存在问题的方法</span>
-<span class="token keyword">void</span> <span class="token function">moveIfAtOrigin</span><span class="token punctuation">(</span><span class="token keyword">double</span> newX<span class="token punctuation">,</span> <span class="token keyword">double</span> newY<span class="token punctuation">)</span><span class="token punctuation">&#123;</span>
- <span class="token keyword">long</span> stamp <span class="token operator">=</span> sl<span class="token punctuation">.</span><span class="token function">readLock</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
- <span class="token keyword">try</span> <span class="token punctuation">&#123;</span>
-  <span class="token keyword">while</span><span class="token punctuation">(</span>x <span class="token operator">==</span> <span class="token number">0.0</span> <span class="token operator">&amp;&amp;</span> y <span class="token operator">==</span> <span class="token number">0.0</span><span class="token punctuation">)</span><span class="token punctuation">&#123;</span>
-    <span class="token comment">//tryConvertToWriteLock(stamp)这个方法内部会释放悲观读锁stamp  </span>
-    <span class="token keyword">long</span> ws <span class="token operator">=</span> sl<span class="token punctuation">.</span><span class="token function">tryConvertToWriteLock</span><span class="token punctuation">(</span>stamp<span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token keyword">if</span> <span class="token punctuation">(</span>ws <span class="token operator">!=</span> <span class="token number">0L</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
-      x <span class="token operator">=</span> newX<span class="token punctuation">;</span>
-      y <span class="token operator">=</span> newY<span class="token punctuation">;</span>
-      <span class="token keyword">break</span><span class="token punctuation">;</span>
-    <span class="token punctuation">&#125;</span> <span class="token keyword">else</span> <span class="token punctuation">&#123;</span>
-      sl<span class="token punctuation">.</span><span class="token function">unlockRead</span><span class="token punctuation">(</span>stamp<span class="token punctuation">)</span><span class="token punctuation">;</span>
-      stamp <span class="token operator">=</span> sl<span class="token punctuation">.</span><span class="token function">writeLock</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">&#125;</span>
-  <span class="token punctuation">&#125;</span>
- <span class="token punctuation">&#125;</span> <span class="token keyword">finally</span> <span class="token punctuation">&#123;</span>
-  sl<span class="token punctuation">.</span><span class="token function">unlock</span><span class="token punctuation">(</span>stamp<span class="token punctuation">)</span><span class="token punctuation">;</span>
-<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-
-
-
-<p>在锁升级成功的时候，最后没有释放最新的写锁，可以在<code>if</code>块的<code>break</code>上加个<code>stamp=ws</code>进行释放。</p>
-<h3 id="别人的总结"><a href="#别人的总结" class="headerlink" title="别人的总结"></a>别人的总结</h3><blockquote>
-<p><code>StampedLock</code>读模板，先通过乐观读或者悲观读锁获取变量，然后利用这些变量处理业务逻辑，会不会存在线程安全的情况? 比如，读出来的变量没问题，但是进行业务逻辑处理的时候，这时读出的变量有可能发生变化了(比如被写锁改写了)？所以当使用乐观读锁时，是不是等业务都处理完了（比如先利用变量把距离计算完），再判断变量是否被改写，如果没改写，直接return;如果已经改写，则使用悲观读锁做同样的事情。不过如果业务比较耗时，可能持有悲观锁的时间会比较长?</p>
-<p>——<strong>Presley</strong></p>
+                <h2 id="Kafka集群部署方案-amp-参数推荐配置"><a href="#Kafka集群部署方案-amp-参数推荐配置" class="headerlink" title="Kafka集群部署方案&amp;参数推荐配置"></a>Kafka集群部署方案&amp;参数推荐配置</h2><h2 id="集群部署选择"><a href="#集群部署选择" class="headerlink" title="集群部署选择"></a>集群部署选择</h2><h3 id="操作系统"><a href="#操作系统" class="headerlink" title="操作系统"></a>操作系统</h3><p><code>Linux</code>在以下3个方面表现更胜一筹:</p>
+<ul>
+<li><code>I/O</code>模型使用</li>
+<li>数据网络传输效率</li>
+<li>社区支持度</li>
+</ul>
+<p><code>Kafka</code>客户端底层使用了<code>Java</code>的<code>Selector</code>,<code>Selector</code>在<code>Linux</code>上实现的机制是<code>epoll</code>，能够获得更高效的<code>I/O</code>性能。</p>
+<p><code>Kafka</code>部署在<code>Linux</code>上能够享受的零拷贝<code>（Zero Copy）</code>技术，即当数据在磁盘和网络进行传输是避免昂贵的内核态数据拷贝从而实现快速数据传输。</p>
 <blockquote>
-<p><strong>两种场景，如果处理业务需要保持互斥，那么就用互斥锁，如果不需要保持互斥才可以用读写锁。</strong></p>
-<p><strong>一般来讲缓存是不需要保持互斥性的，能接受瞬间的不一致。</strong></p>
+<p>I/O模型和零拷贝会单拎出来写文章。</p>
 </blockquote>
+<h3 id="磁盘"><a href="#磁盘" class="headerlink" title="磁盘"></a>磁盘</h3><p>由于<code>Kafka</code>采用的是顺序写，所以一定程度上规避了<code>HDD</code>最大的缺点，即随机写操作慢。</p>
+<p><code>HDD</code>因易损坏造成的可靠性差等缺陷，又由<code>Kafka</code>在软件层面提供机制来保证，因此大部分场景下使用<code>HDD</code>性价比很高。</p>
+<p><code>Kafka</code>在软件层面自行实现了负载均衡，随然很多大厂确实是把<code>Kafka</code>底层的存储交由RAID，但目前<code>Kfafka</code>在存储这方面提供了越来越便捷的高可靠性方案，</p>
+<p>生产中使用<code>RAID</code>似乎不是那么重要了。</p>
+<h3 id="磁盘容量"><a href="#磁盘容量" class="headerlink" title="磁盘容量"></a>磁盘容量</h3><p>假设某个业务一天发1亿条消息到<code>Kafka</code>，每条消息存2份防止丢失，消息默认保存2周，消息平均大小为1KB。</p>
+<p>计算：</p>
+<p>每天1亿条，每条1KB，每条2份，保存2周，即：</p>
+<p>每天的数据量：<code>1亿 * 1KB * 2 / 1000 / 1000 = 200GB</code>，另外<code>Kafka</code>集群除了消息数据还有其他类型的数据，比如索引数据等，再为这些数据留出10%的空间。</p>
+<p>因此每天数据量就是220GB。保存两周，即 <code>220GB * 14 ≈  3TB</code>，<code>Kafka</code>支持数据压缩，假设压缩比是0.75，最后要规划的容量是<code>0.75 * 3 = 2.25TB</code>。</p>
+<p>通过上面的分析可以总结，规划磁盘容量时需要考虑以下几个元素：</p>
+<ul>
+<li><p>新增消息数</p>
+</li>
+<li><p>消息留存时间</p>
+</li>
+<li><p>平均消息大小</p>
+</li>
+<li><p>备份数</p>
+</li>
+<li><p>是否启用压缩</p>
+</li>
+</ul>
+<h3 id="带宽"><a href="#带宽" class="headerlink" title="带宽"></a>带宽</h3><p><code>Kafka</code>是一种通过网络大量进行数据传输的工具，因此带宽特别容易成为瓶颈。</p>
+<p>普通的以太网络，带宽主要有：1Gbps千兆网络（单机带宽），10Gbps万兆网络。</p>
+<p>与其说是带宽规划，实际上是<code>Kafka</code>服务器数量规划。</p>
+<p>假设机房环境是千兆网络，某业务目标是1小时内处理1TB业务数据。</p>
+<p>计算：</p>
+<p>带宽是1Gbps，即每秒处理1G的数据，假设每台<code>Kafka</code>都是单机部署，通常情况下<code>Kafka</code>会用到70%的带宽资源，因为其他进程可能会占用一些带宽资源。</p>
+<p>即单机部署<code>Kafka</code>，每台服务器可以用到700Mb的带宽，但是实际上，这只是它能使用的最大带宽，你不能让<code>Kafka</code>服务器常规性使用这么多资源，故通常要再额外预留出2/3的资源，即单台服务器使用带宽<code>700Mb/3≈240Mbps</code>**(为follower拉取留一些带宽)**。</p>
+<p>这个2/3实际上是相当保守的，需要根据实际情况酌情减少此值。</p>
+<p><code>1T＝1024GB，1GB＝1024MB，1MB＝1024KB，1KB＝1024B（字节）</code><br><code>1TB=1024 * 1024MB = 8 * 1024 * 1024Mb位</code><br>那么<code>8 * 1024 * 1024Mb / 3600s= 2330Mbps</code><br><code>2330Mbps/234Mbps</code> 约等于 10台服务器，如果每天需要2个副本，那么总共需要30台服务器。</p>
+<blockquote>
+<p><strong>A_NATE_👻</strong>:</p>
+<p>我们曾经也认为用普通硬盘就行，换成普通硬盘导致生产者堵塞写入负载偏高，换成SSD就没事了，我们每天消息数大概50亿。</p>
+<p><strong>胡夕</strong>: 专栏里面只是给出一个评估的方法。具体还要结合自己的实际情况来调整。通常我们认为SSD的顺序写TPS大约是HDD的4倍。</p>
+<p>除了纵向扩展使用SSD之外，也可以尝试一下横向扩展，增加更多的broker或HDD分散负载：）</p>
+</blockquote>
+<blockquote>
+<p><strong>胡夕</strong>：没有谈及CPU，是因为通常情况下Kafka不太占用CPU，因此没有这方面的最佳实践出来。</p>
+<p>但有些情况下Kafka broker是很耗CPU的：</p>
+<ol>
+<li>server和client使用了不同的压缩算法；</li>
+<li>server和client版本不一致造成消息格式转换；</li>
+<li>broker端解压缩校验</li>
+</ol>
+<p>其中前两个都能规避，第三个目前无法规避。不过相比带宽资源，CPU通常都不是瓶颈。</p>
+</blockquote>
+<h2 id="集群参数配置"><a href="#集群参数配置" class="headerlink" title="集群参数配置"></a>集群参数配置</h2><h3 id="Broker端参数"><a href="#Broker端参数" class="headerlink" title="Broker端参数"></a>Broker端参数</h3><p><code>Broker</code>端参数也被成为静态参数<code>(Static Configs)</code>，即必须在Kafka的配置文件<code>server.properties</code>中进行配置的参数，增删改都需要重启<code>Broker</code>才能生效。</p>
+<ul>
+<li><code>log.dirs</code> 指定了<code>Broker</code>需要使用的若干个文件目录路径。没有默认值，需要亲自指定。</li>
+<li><code>log.dir </code>用来补充上一个参数</li>
+</ul>
+<p>这两个参数设置第一个即可，并且一定要为其配置多个路径，CSV格式，逗号分隔，比如<code>/home/kakfa1,/home/kafka2,/home/kafka3</code>。</p>
+<p>有条件的话，最好保证目录挂载到不同物理磁盘，好处：</p>
+<ol>
+<li><p>提升读写性能：比起单块磁盘，多块物理磁盘同时读写数据有更高的吞吐量。</p>
+</li>
+<li><p>能够实现故障转移：即<code>Failover</code>。<code>Kafka</code>1.1 开始，坏掉的磁盘上的数据会自动地转移到其他正常的磁盘上，而且 <code>Broker</code> 还能正常工作。这个改进正是舍弃 RAID 方案的基础：如果没有这种 <code>Failover</code> ，只能依靠 RAID 来提供保障。</p>
+</li>
+</ol>
+<ul>
+<li><p><code>zookeeper.connect</code> CSV格式 指定格式<code>zk1:2181,zk2:2181,zk3:2181</code>，如果想让两套<code>Kafka</code>集群使用同一套<code>Zookeeper</code>集群：<code>zk1:2181,zk2:2181,zk3:2181/kafka1和zk1:2181,zk2:2181,zk3:2181/kafka2</code></p>
+</li>
+<li><p><code>listeners</code>：监听器，告诉外部连接者要通过什么协议访问指定主机名和端口开放的 Kafka 服务。</p>
+</li>
+<li><p><code>advertise.listeners</code>：和<code>listeners</code>比多了个 <code>advertised</code>。<code>Advertised</code>的含义表示宣称的、公布的，就是说这组监听器是<code>Broker</code>用于对外发布的。</p>
+</li>
+</ul>
+<p>监听器的概念，从构成上来说，它是若干个逗号分隔的三元组，每个三元组的格式为&lt;协议名称，主机名，端口号&gt;。</p>
+<p>这里的协议名称可能是标准的名字，比如 <code>PLAINTEXT</code> 表示明文传输、SSL 表示使用 SSL 或 TLS 加密传输等；</p>
+<p>也可能是你自己定义的协议名字，比如<code>CONTROLLER: //localhost:9092</code>。</p>
+<ul>
+<li><code>listener.security.protocol.map</code></li>
+</ul>
+<p>一旦你自己定义了协议名称，你必须还要指定<code>listener.security.protocol.map</code>参数告诉这个协议底层使用了哪种安全协议，比如指定<code>istener.security.protocol.map=CONTROLLER:PLAINTEXT</code>表示<code>CONTROLLER</code>这个自定义协议底层使用明文不加密传输数据。</p>
+<p><strong>建议：最好全部使用主机名，即 Broker 端和 Client 端应用配置中全部填写主机名。 Broker 源代码中也使用的是主机名，如果你在某些地方使用了 IP 地址进行连接，可能会发生无法连接的问题。</strong></p>
+<ul>
+<li><p><code>auto.create.topics.enable</code>：是否支持自动创建<code>topic</code>。建议为<code>false</code>，避免生产上出现很多未知<code>topic</code></p>
+</li>
+<li><p><code>unclean.leader.election.enable</code>：是否支持脏选举。建议显式设置为<code>false</code>，只能让<code>ISR</code>选举，后果就是出问题的分区不可用。设置为<code>true</code>会引起数据丢失。</p>
+</li>
+<li><p><code>auto.leader.rebalance.enable</code>：是否允许定期进行 <code>Leader</code> 选举。设置它的值为<code>true</code> 表示允许 <code>Kafka</code> 定期地对一些 <code>Topic</code> 分区进行 <code>Leader</code> 重选举，当然这个重选举不是无脑进行的，它要满足一定的条件才会发生。严格来说它与上一个参数中 <code>Leader </code>选举的最大不同在于，它不是选 <code>Leader</code>，而是换 <code>Leader</code>！比如 <code>Leader A</code> 一直表现得很好，但若<code>auto.leader.rebalance.enable=true</code>，那么有可能一段时间后 <code>Leader A</code> 就要被强行卸任换成 <code>Leader B</code>。换一次 <code>Leader</code> 代价很高的，原本向 A 发送请求的所有客户端都要切换成向 B 发送请求，而且这种换 <code>Leader</code> 本质上没有任何性能收益，因此建议在生产环境中把这个参数设置成 <code>false</code>。</p>
+</li>
+<li><p><code>log.retention.&#123;hours|minutes|ms&#125;</code>：控制一条消息数据被保存多长时间。从优先级上来说 ms 设置最高、minutes 次之、hours 最低。比如<code>log.retention.hours</code>=168表示保存7天。（不同Topic 根据自身业务需要，设置自己的留存时间。如果只能设置全局 <code>Broker</code> 参数，那么势必要提取所有业务留存时间的最大值作为全局参数值，此时应该设置 Topic 级别参数把它覆盖。）</p>
+</li>
+<li><p><code>log.retention.bytes</code>：这是指定 <code>Broker </code>为消息保存的总磁盘容量大小。默认值-1，即想保存多少就多少。</p>
+</li>
+<li><p><code>message.max.bytes</code>：控制 <code>Broker</code> 能够接收的最大消息大小。默认值1000012，不到1MB，太小。根据自身业务调大。</p>
+</li>
+</ul>
+<blockquote>
+<p><strong>第一片心意</strong>：</p>
+<p><code>auto.leader.rebalance.enable</code><br>   关于这个参数的设置，我有一点不同的意见，官网说的是如果某个broker挂了，那分布在他上的leader副本就会自动切换到其他活着的broker上，但是挂掉的broker重启之后，集群并不会将他之前的leader副本再切换回来，这样就会使其他broker上leader副本数较多，而该broker上无leader副本（无新主题创建），从而造成负载不均衡的情况。<br>   这时我们可以通过 <code>kafka-preferred-replica-election.sh </code>脚本来重新平衡集群中的leader副本。但是我们配置这个参数为true的话，controller角色就会每五分钟（默认）检查一下集群不平衡的状态，进而重新平衡leader副本。</p>
+<p>胡夕: 同意。不过实际上，线上环境贸然大面积迁移副本leader是非常有风险的事情：）</p>
+</blockquote>
+<blockquote>
+<p><strong>杨陆伟</strong>:</p>
+<p><code>log.retention.bytes</code>这个参数是针对主题的吧？比如设置为100M，Kafka定期会把每个主题的日志数据留存到100M以下？</p>
+<p>胡夕: 这个参数既有broker端也有topic端，不过最终都是作用于topic的。另外算法上也不是简单的比较大小。举个例子：假设日志段大小是700MB，当前分区共有4个日志段文件，大小分别是700MB，700MB，700MB和1234B——显然1234B那个文件就是active日志段。此时该分区总的日志大小是3*700MB+1234B=2100MB+1234B，如果阈值设置为2000MB，那么超出阈值的部分就是100MB+1234B，小于日志段大小700MB，故Kafka不会执行任何删除操作，即使总大小已经超过了阈值；反之如果阈值设置为1400MB，那么超过阈值的部分就是700MB+1234B &gt; 700MB，此时Kafka会删除最老的那个日志段文件。</p>
+</blockquote>
+<blockquote>
+<p><strong>咸淡一首诗</strong>:</p>
+<p>对于failover机制，kafka会新建副本，从leader处同步最新的数据给新建副本。如果坏掉的盘是leader持久化的盘并且其他副本没有来的及从坏掉的leader分区同步最新数据，重新选举leader后岂不是也会丢失数据？？？</p>
+<p>胡夕: 是的，这种情况会丢失数据。其实Kafka并没有承诺不丢失数据，而是在满足某些条件下才做持久化保证。</p>
+</blockquote>
+<h3 id="Topic级别参数"><a href="#Topic级别参数" class="headerlink" title="Topic级别参数"></a>Topic级别参数</h3><p><code>Topic</code> 级别参数会覆盖全局 <code>Broker</code> 参数的值，而每个 <code>Topic</code> 都能设置自己的参数值，这就是所谓的 <code>Topic</code> 级别参数。</p>
+<ul>
+<li><p><code>retention.ms</code>：该 <code>Topic</code> 消息被保存的时长。默认是 7 天，即该<code>Topic</code> 只保存最近 7 天的消息。一旦设置了这个值，它会覆盖掉 <code>Broker</code> 端的全局参数值。</p>
+</li>
+<li><p><code>retention.bytes</code>：规定了要为该 <code>Topic</code> 预留多大的磁盘空间。和全局参数作用相似，这个值通常在多租户的 <code>Kafka</code> 集群中会有用武之地。默认值是 -1，表示可以无限使用磁盘空间。</p>
+</li>
+<li><p><code>max.message.bytes</code>：决定了 <code>Kafka Broker</code>能够正常接收该 <code>Topic</code> 的最大消息大小</p>
+</li>
+</ul>
+<h3 id="JVM参数"><a href="#JVM参数" class="headerlink" title="JVM参数"></a>JVM参数</h3><p>无脑给出一个通用的建议：将<code>JVM</code>堆大小设置成 6GB ，这是目前业界比较公认的一个合理值。很多人就是使用默认的 <code>Heap Size</code> 来跑 <code>Kafka</code>，默认的 1GB 有点小，毕竟 <code>Kafka Broker</code> 在与客户端进行交互时会在 <code>JVM</code> 堆上创建大量的 <code>ByteBuffer</code> 实例，<code>Heap Size</code> 不能太小。</p>
+<p>Java 8，那么可以手动设置使用 G1 收集器。在没有任何调优的情况下，G1 表现得要比 CMS 出色，主要体现在更少的 Full GC，需要调整的参数更少等。</p>
+<ul>
+<li><code>KAFKA_HEAP_OPTS</code>：指定堆大小。</li>
+<li><code>KAFKA_JVM_PERFORMANCE_OPTS</code>：指定 GC 参数。</li>
+</ul>
+<h3 id="操作系统参数"><a href="#操作系统参数" class="headerlink" title="操作系统参数"></a>操作系统参数</h3><ul>
+<li>文件描述符限制： <code>ulimit -n</code> 通常情况下将它设置成一个超大的值是合理的做法，比如<code>ulimit -n 1000000</code>。其实设置这个参数一点都不重要，但不设置的话后果很严重，比如你会经常看到“Too many open files”的错误。</li>
+<li>文件系统类型： 生产环境最好还是使用 XFS。最近有个 Kafka 使用 ZFS 的数据报告，貌似性能更加强劲，有条件的话不妨一试。</li>
+<li>Swappiness：一旦设置成 0，当物理内存耗尽时，操作系统会触发 OOM killer 这个组件，它会随机挑选一个进程然后 kill 掉，即根本不给用户任何的预警。但如果设置成一个比较小的值，当开始使用 swap 空间时，至少能够观测到 Broker 性能开始出现急剧下降，从而有进一步调优和诊断问题的时间。基于这个考虑，建议将 swappniess 配置成一个接近 0 但不为 0 的值，比如 1。</li>
+<li>提交时间：向 Kafka 发送数据并不是真要等数据被写入磁盘才会认为成功，而是只要数据被写入到操作系统的页缓存（Page Cache）上就可以了，随后操作系统根据 LRU 算法会定期将页缓存上的“脏”数据落盘到物理磁盘上。这个定期就是由提交时间来确定的，默认是 5 秒。一般情况下我们会认为这个时间太频繁了，可以适当地增加提交间隔来降低物理磁盘的写操作。当然你可能会有这样的疑问：如果在页缓存中的数据在写入到磁盘前机器宕机了，那岂不是数据就丢失了。的确，这种情况数据确实就丢失了，但鉴于 Kafka 在软件层面已经提供了多副本的冗余机制，因此这里稍微拉大提交间隔去换取性能还是一个合理的做法。小结</li>
+</ul>
+<blockquote>
+<p><strong>saup007</strong>：</p>
+<p>修改 Topic 级 max.message.bytes，还要考虑以下两个吧？<br>还要修改 Broker的 replica.fetch.max.bytes 保证复制正常<br>消费还要修改配置 fetch.message.max.bytes</p>
+</blockquote>
+<blockquote>
+<p><strong>Hello world</strong>：</p>
+<p>老师说的无脑配置给jvm heap 6G大小，这应该也看机器的吧，现在机器的内存也越来越大，我们这的机器都是64G 内存，配了16G的heap，老师觉得可以优化吗</p>
+<p>胡夕: 虽然无脑推荐6GB，但绝不是无脑推荐&gt;6GB。一个16GB的堆Full GC一次要花多长时间啊，所以我觉得6GB可以是一个初始值，你可以实时监控堆上的live data大小，根据这个值调整heap size。只是因为大内存就直接调整到16GB，个人觉得不可取。</p>
+<p>另外堆越小留给页缓存的空间也就越大，这对Kafka是好事。</p>
 </blockquote>
 
                 
@@ -666,7 +663,7 @@ T2<span class="token punctuation">.</span><span class="token function">join</spa
                     </i>
                 </span>
                 <span class="reprint-info">
-                    <a href="/about" rel="external nofollow noreferrer">Wendell</a>
+                    <a href="/about" rel="external nofollow noreferrer">Wendell-Z</a>
                 </span>
             </div>
             <div class="reprint__type">
@@ -676,7 +673,7 @@ T2<span class="token punctuation">.</span><span class="token function">join</spa
                     </i>
                 </span>
                 <span class="reprint-info">
-                    <a href="https://wendell-z.github.io/posts/2020/04/16/java-bing-fa-18-stamplock/">https://wendell-z.github.io/posts/2020/04/16/java-bing-fa-18-stamplock/</a>
+                    <a href="https://wendell-z.github.io/posts/2021/10/17/kafka-ji-qun-bu-shu-fang-an-can-shu-tui-jian-pei-zhi/">https://wendell-z.github.io/posts/2021/10/17/kafka-ji-qun-bu-shu-fang-an-can-shu-tui-jian-pei-zhi/</a>
                 </span>
             </div>
             <div class="reprint__notice">
@@ -689,7 +686,7 @@ T2<span class="token punctuation">.</span><span class="token function">join</spa
                     本博客所有文章除特別声明外，均采用
                     <a href="https://creativecommons.org/licenses/by/4.0/deed.zh" rel="external nofollow noreferrer" target="_blank">CC BY 4.0</a>
                     许可协议。转载请注明来源
-                    <a href="/about" target="_blank">Wendell</a>
+                    <a href="/about" target="_blank">Wendell-Z</a>
                     !
                 </span>
             </div>
@@ -714,12 +711,8 @@ T2<span class="token punctuation">.</span><span class="token function">join</spa
                     
                         <div class="article-tag">
                             
-                                <a href="/tags/Java/">
-                                    <span class="chip bg-color">Java</span>
-                                </a>
-                            
-                                <a href="/tags/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/">
-                                    <span class="chip bg-color">并发编程</span>
+                                <a href="/tags/Kafka/">
+                                    <span class="chip bg-color">Kafka</span>
                                 </a>
                             
                         </div>
@@ -1152,49 +1145,47 @@ T2<span class="token punctuation">.</span><span class="token function">join</spa
 <article id="prenext-posts" class="prev-next articles">
     <div class="row article-row">
         
-        <div class="article col s12 m6" data-aos="fade-up">
+        <div class="article col s12 m6" data-aos="fade-up" data-aos="fade-up">
             <div class="article-badge left-badge text-color">
-                <i class="fas fa-chevron-left"></i>&nbsp;上一篇</div>
+                <i class="far fa-dot-circle"></i>&nbsp;本篇
+            </div>
             <div class="card">
-                <a href="/2020/04/16/java-bing-fa-19-countdownlatch-cyclicbarrier/">
+                <a href="/2021/10/17/kafka-ji-qun-bu-shu-fang-an-can-shu-tui-jian-pei-zhi/">
                     <div class="card-image">
                         
-                        <img src="https://images-1252818907.cos.ap-chengdu.myqcloud.com/images/java并发编程.jpg" class="responsive-img" alt="Java并发19-CountDownLatch&amp;CyclicBarrier">
+                        <img src="https://images-1252818907.cos.ap-chengdu.myqcloud.com/%20images/%20e03abf48-2d90-11e6-875f-4ba7939473e4.jpg" class="responsive-img" alt="Kafka集群部署方案&amp;参数推荐配置">
                         
-                        <span class="card-title">Java并发19-CountDownLatch&amp;CyclicBarrier</span>
+                        <span class="card-title">Kafka集群部署方案&amp;参数推荐配置</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
                     <div class="summary block-with-text">
                         
-                            让线程步调一致
+                            Kafka集群部署方案&参数推荐配置
                         
                     </div>
                     <div class="publish-info">
-                        <span class="publish-date">
-                            <i class="far fa-clock fa-fw icon-date"></i>2020-04-16
-                        </span>
+                            <span class="publish-date">
+                                <i class="far fa-clock fa-fw icon-date"></i>2021-10-17
+                            </span>
                         <span class="publish-author">
                             
                             <i class="fas fa-bookmark fa-fw icon-category"></i>
                             
-                            <a href="/categories/%E5%90%8E%E7%AB%AF/" class="post-category">
-                                    后端
+                            <a href="/categories/Kafka/" class="post-category">
+                                    Kafka
                                 </a>
                             
                             
                         </span>
                     </div>
                 </div>
+
                 
                 <div class="card-action article-tags">
                     
-                    <a href="/tags/Java/">
-                        <span class="chip bg-color">Java</span>
-                    </a>
-                    
-                    <a href="/tags/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/">
-                        <span class="chip bg-color">并发编程</span>
+                    <a href="/tags/Kafka/">
+                        <span class="chip bg-color">Kafka</span>
                     </a>
                     
                 </div>
@@ -1208,30 +1199,30 @@ T2<span class="token punctuation">.</span><span class="token function">join</spa
                 下一篇&nbsp;<i class="fas fa-chevron-right"></i>
             </div>
             <div class="card">
-                <a href="/2020/04/16/java-bing-fa-17-du-xie-suo-shi-xian-huan-cun/">
+                <a href="/2021/10/06/kafka-ru-men-yi/">
                     <div class="card-image">
                         
-                        <img src="https://images-1252818907.cos.ap-chengdu.myqcloud.com/images/java并发编程.jpg" class="responsive-img" alt="Java并发17-读写锁实现缓存">
+                        <img src="https://images-1252818907.cos.ap-chengdu.myqcloud.com/%20images/%20e03abf48-2d90-11e6-875f-4ba7939473e4.jpg" class="responsive-img" alt="Kafka基本概念和常见结构模型">
                         
-                        <span class="card-title">Java并发17-读写锁实现缓存</span>
+                        <span class="card-title">Kafka基本概念和常见结构模型</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
                     <div class="summary block-with-text">
                         
-                            读写锁实现缓存
+                            Kafka基本概念和常见结构模型
                         
                     </div>
                     <div class="publish-info">
                             <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2020-04-16
+                                <i class="far fa-clock fa-fw icon-date"></i>2021-10-06
                             </span>
                         <span class="publish-author">
                             
                             <i class="fas fa-bookmark fa-fw icon-category"></i>
                             
-                            <a href="/categories/%E5%90%8E%E7%AB%AF/" class="post-category">
-                                    后端
+                            <a href="/categories/Kafka/" class="post-category">
+                                    Kafka
                                 </a>
                             
                             
@@ -1241,12 +1232,8 @@ T2<span class="token punctuation">.</span><span class="token function">join</spa
                 
                 <div class="card-action article-tags">
                     
-                    <a href="/tags/Java/">
-                        <span class="chip bg-color">Java</span>
-                    </a>
-                    
-                    <a href="/tags/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/">
-                        <span class="chip bg-color">并发编程</span>
+                    <a href="/tags/Kafka/">
+                        <span class="chip bg-color">Kafka</span>
                     </a>
                     
                 </div>
